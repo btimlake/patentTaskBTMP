@@ -5,6 +5,8 @@
 % learning from 'Fictive' earnings.
 % Tobias Larsen, November 2015
 
+% This is Martina's comment.
+
 function [player1Earnings] = patentTask(player2Strategy)
 
 PRIZE=10;                               % Winnings aside from bidding endowment, currently a fixed value
