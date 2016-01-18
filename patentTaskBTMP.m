@@ -62,3 +62,84 @@ function [player2Options] = player2Update(player2Options, player2Strategy, playe
     end
 
 end
+
+%% Screen 1: presentation, in progress
+% based on some material from Scarfe PTB tutorial
+clear 
+
+win = 10 %COMMENT AFTER DEBUGGING
+screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
+% [win, screenRect] = Screen('OpenWindow', 0, [127 127 127], [0 0 640 480]);
+
+% Make a base Rect of 30 by 40 pixels
+baseRect = [0 0 30 40];
+
+
+% Get the size of the on screen window
+screenXpixels=640 %COMMENT AFTER DEBUGGING
+screenYpixels=480 %COMMENT AFTER DEBUGGING
+% [screenXpixels, screenYpixels] = Screen('WindowSize', win);
+    % RESTORE AFTER DEBUGGING
+% Get the centre coordinate of the window
+[xCenter, yCenter] = RectCenter(screenRect);
+
+% Screen X positions of top five rectangles
+topRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45];
+numtopRect = length(topRectXpos);
+% Screen X positions of upper four rectangles
+uppRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36];
+numuppRect = length(uppRectXpos);
+% Screen X positions of bottom ten rectangles
+botRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45 screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 screenXpixels * 0.81 screenXpixels * 0.9];
+numbotRect = length(botRectXpos);
+
+% Screen Y positions of top five rectangles
+topRectYpos = screenYpixels * 0.2;
+% Screen Y positions of upper four rectangles
+uppRectYpos = screenYpixels * 0.4;
+% Screen Y positions of bottom ten rectangles
+botRectYpos = screenYpixels * 0.8;
+
+% Make coordinates for top row of rectangles
+topRects = nan(4, 3);
+for i = 1:numtopRect
+    topRects(:, i) = CenterRectOnPointd(baseRect, topRectXpos(i), topRectYpos)
+end
+
+% Make coordinates for upper row of rectangles
+uppRects = nan(4, 3);
+for i = 1:numuppRect
+    uppRects(:, i) = CenterRectOnPointd(baseRect, uppRectXpos(i), uppRectYpos)
+end
+
+% Make coordinates for bottom row of rectangles
+botRects = nan(4, 3);
+for i = 1:numbotRect
+    botRects(:, i) = CenterRectOnPointd(baseRect, botRectXpos(i), botRectYpos)
+end
+
+% Set the colors to Red, Green and Blue
+% allColors = [1 0 0; 0 1 0; 0 0 1];
+
+%set colors to orange, green and yellow
+allColors = [1 1 0]
+% rect(1:4,1:5) = [1 1 0]
+% rect(1:4,6:10) = [0 1 0]
+% rect(1:4,11:20) = [0 .5 .5]
+
+
+allRects
+
+% Draw the top rects to the screen
+Screen('FillRect', win, allColors, topRects);
+
+% Draw the upper rects to the screen
+Screen('FillRect', win, allColors, uppRects);
+
+% Draw the bottom rects to the screen
+Screen('FillRect', win, allColors, botRects);
+
+% Flip to the screen
+Screen('Flip', win);
+
+end
