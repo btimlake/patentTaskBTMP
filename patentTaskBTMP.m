@@ -1,4 +1,3 @@
-%%%%%%
 % Function to run text based patent race task
 % So far only setup so participant is the strong player
 % And only 2 methods of weak player strategies implemented, 'RL', and
@@ -63,23 +62,41 @@ function [player2Options] = player2Update(player2Options, player2Strategy, playe
 
 end
 
-%% Screen 1: presentation, in progress
-% based on some material from Scarfe PTB tutorial
-clear 
+% Patent race task
+% 
+% Work with Martina to get screen progression
+% 	- martina re Tobias
+% 		- three screens: presentation, selection, outcome: just button press for now
+% 		
+% 3 screens
+% Steps
+% 1 Rectangles display
+% w/o underlying behavior (i.e. any button to get to next scren)
+% 
+% 2 integrate mathematics
+% 
+% 3 write to log file
+% 
+% ====
+% Tuesday: Graphical portion
 
-win = 10 %COMMENT AFTER DEBUGGING
-screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
-% [win, screenRect] = Screen('OpenWindow', 0, [127 127 127], [0 0 640 480]);
+
+%% Screen 1: Presentation
+% based on some material from Scarfe PTB tutorial
+clear
+
+% win = 10 %COMMENT AFTER DEBUGGING
+% screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
+[win, screenRect] = Screen('OpenWindow', 0, [127 127 127], [0 0 640 480]);
 
 % Make a base Rect of 30 by 40 pixels
 baseRect = [0 0 30 40];
 
-
-% Get the size of the on screen window
-screenXpixels=640 %COMMENT AFTER DEBUGGING
-screenYpixels=480 %COMMENT AFTER DEBUGGING
-% [screenXpixels, screenYpixels] = Screen('WindowSize', win);
-    % RESTORE AFTER DEBUGGING
+% Get the size of the on-screen window
+% screenXpixels=640 %COMMENT AFTER DEBUGGING
+% screenYpixels=480 %COMMENT AFTER DEBUGGING
+[screenXpixels, screenYpixels] = Screen('WindowSize', win);
+% RESTORE AFTER DEBUGGING
 % Get the centre coordinate of the window
 [xCenter, yCenter] = RectCenter(screenRect);
 
@@ -103,43 +120,194 @@ botRectYpos = screenYpixels * 0.8;
 % Make coordinates for top row of rectangles
 topRects = nan(4, 3);
 for i = 1:numtopRect
-    topRects(:, i) = CenterRectOnPointd(baseRect, topRectXpos(i), topRectYpos)
+    topRects(:, i) = CenterRectOnPointd(baseRect, topRectXpos(i), topRectYpos);
 end
 
 % Make coordinates for upper row of rectangles
 uppRects = nan(4, 3);
 for i = 1:numuppRect
-    uppRects(:, i) = CenterRectOnPointd(baseRect, uppRectXpos(i), uppRectYpos)
+    uppRects(:, i) = CenterRectOnPointd(baseRect, uppRectXpos(i), uppRectYpos);
 end
 
 % Make coordinates for bottom row of rectangles
 botRects = nan(4, 3);
 for i = 1:numbotRect
-    botRects(:, i) = CenterRectOnPointd(baseRect, botRectXpos(i), botRectYpos)
+    botRects(:, i) = CenterRectOnPointd(baseRect, botRectXpos(i), botRectYpos);
 end
 
-% Set the colors to Red, Green and Blue
-% allColors = [1 0 0; 0 1 0; 0 0 1];
+%set colors to blue, yellow, green
+topColors = [0, 0, 255];
+uppColors = [255, 200, 0];
+botColors = [40, 155, 40];
 
-%set colors to orange, green and yellow
-allColors = [1 1 0]
-% rect(1:4,1:5) = [1 1 0]
-% rect(1:4,6:10) = [0 1 0]
-% rect(1:4,11:20) = [0 .5 .5]
+% Screen Y positions of top text
+topTextYpos = screenYpixels * 0.1;
+% Screen Y positions of upper text
+uppTextYpos = screenYpixels * 0.3;
+% Screen Y positions of bottom text
+botTextYpos = screenYpixels * 0.7;
 
+% Select specific text font, style and size:
+    Screen('TextFont', win, 'Courier New');
+    Screen('TextSize', win, 24);
+    Screen('TextStyle', win);
 
-allRects
+% Instruction text strings
+topInstructText = 'Select your investment (up to 5)';
+uppInstructText = 'Your opponent can invest up to 4';
+botInstructText = 'You can win 10';
 
+% Draw betting instructions
+DrawFormattedText(win, topInstructText, topRectXpos(1), topTextYpos)
 % Draw the top rects to the screen
-Screen('FillRect', win, allColors, topRects);
+Screen('FrameRect', win, topColors, topRects);
 
+% Draw opponent explanation
+DrawFormattedText(win, uppInstructText, uppRectXpos(1), uppTextYpos)
 % Draw the upper rects to the screen
-Screen('FillRect', win, allColors, uppRects);
+Screen('FrameRect', win, uppColors, uppRects);
 
+% Draw reward explanation
+DrawFormattedText(win, botInstructText, botRectXpos(1), botTextYpos)
 % Draw the bottom rects to the screen
-Screen('FillRect', win, allColors, botRects);
+Screen('FrameRect', win, botColors, botRects);
 
 % Flip to the screen
 Screen('Flip', win);
 
+noClickYet=true;
+
+while noClickYet % as long as this is true
+    [mouseX, mouseY, buttons] = GetMouse(win); % record mouse click
+    %change the value of noClickYet (and break the loop) only if the click
+    %is inside my oneRect
+    if buttons(1)
+        noClickYet=false;
+        %         for k = 1:totalNumberRect %for each rect, this loop check if the button was within the coordinates.
+        %             thisRect= myTrials(k).rect;
+        %             if mouseX>thisRect(1) & ...
+        %                     mouseX<thisRect(3) & ...
+        %                     mouseY>thisRect(2) & ...
+        %                     mouseY<thisRect(4)
+        %                 myTrials(k)=[];
+        %                 break
+        %             end
+        %         end
+    end
 end
+
+%% Screen 2: Player's selection
+
+buttons(1) = 0;
+
+playerSelection = 4;
+selectedRects = topRects(:,1:playerSelection);
+unSelected = playerSelection + 1;
+unselectedRects = topRects(:,unSelected:5);
+
+% Instruction text strings
+topSelectText = ['You invested ' num2str(playerSelection) '.']
+uppSelectText = 'Your opponent can invest up to 4';
+botSelectText = 'You can win 10';
+
+% Draw betting instructions
+DrawFormattedText(win, topSelectText, topRectXpos(1), topTextYpos)
+% Draw the top rects to the screen
+Screen('FillRect', win, topColors, selectedRects);
+Screen('FrameRect', win, topColors, unselectedRects);
+
+% Draw opponent explanation
+DrawFormattedText(win, uppSelectText, uppRectXpos(1), uppTextYpos)
+% Draw the upper rects to the screen
+Screen('FrameRect', win, uppColors, uppRects);
+
+% Draw reward explanation
+DrawFormattedText(win, botSelectText, botRectXpos(1), botTextYpos)
+% Draw the bottom rects to the screen
+Screen('FrameRect', win, botColors, botRects);
+
+% Flip to the screen
+Screen('Flip', win);
+
+noClickYet=true;
+
+while noClickYet % as long as this is true
+    [mouseX, mouseY, buttons] = GetMouse(win); % record mouse click
+    %change the value of noClickYet (and break the loop) only if the click
+    %is inside my oneRect
+    if buttons(1)
+        noClickYet=false;
+        %         for k = 1:totalNumberRect %for each rect, this loop check if the button was within the coordinates.
+        %             thisRect= myTrials(k).rect;
+        %             if mouseX>thisRect(1) & ...
+        %                     mouseX<thisRect(3) & ...
+        %                     mouseY>thisRect(2) & ...
+        %                     mouseY<thisRect(4)
+        %                 myTrials(k)=[];
+        %                 break
+        %             end
+        %         end
+    end
+end
+
+
+%% Screen 3: Result
+
+buttons(1) = 0;
+
+weakSelection = 3;
+weakselRects = uppRects(:,1:weakSelection);
+weakunSelected = weakSelection + 1;
+weakunselRects = uppRects(:,weakunSelected:4);
+
+% Instruction text strings
+% topResultText = ['You invested ' num2str(playerSelection) '.']
+uppResultText = ['Your opponent invested ' num2str(weakSelection) '.'];
+botResultText = 'You won 10.';
+
+% Draw strong outcome
+DrawFormattedText(win, topSelectText, topRectXpos(1), topTextYpos)
+% Draw the top rects to the screen
+Screen('FillRect', win, topColors, selectedRects);
+Screen('FrameRect', win, topColors, unselectedRects);
+
+% Draw weak outcome
+DrawFormattedText(win, uppResultText, uppRectXpos(1), uppTextYpos)
+% Draw the upper rects to the screen
+Screen('FillRect', win, uppColors, weakselRects);
+Screen('FrameRect', win, uppColors, weakunselRects);
+
+% Draw reward explanation
+    Screen('TextStyle', win, 1); % change style to bold
+DrawFormattedText(win, botResultText, botRectXpos(1), botTextYpos, botColors)
+% Draw the bottom rects to the screen
+Screen('FillRect', win, botColors, botRects);
+
+% Flip to the screen
+Screen('Flip', win);
+
+noClickYet=true;
+
+while noClickYet % as long as this is true
+    [mouseX, mouseY, buttons] = GetMouse(win); % record mouse click
+    %change the value of noClickYet (and break the loop) only if the click
+    %is inside my oneRect
+    if buttons(1) == 0
+        noClickYet=false;
+        %         for k = 1:totalNumberRect %for each rect, this loop check if the button was within the coordinates.
+        %             thisRect= myTrials(k).rect;
+        %             if mouseX>thisRect(1) & ...
+        %                     mouseX<thisRect(3) & ...
+        %                     mouseY>thisRect(2) & ...
+        %                     mouseY<thisRect(4)
+        %                 myTrials(k)=[];
+        %                 break
+        %             end
+        %         end
+    end
+end
+
+sca
+
+        
+
