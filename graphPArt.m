@@ -66,7 +66,8 @@ botTextYpos = screenYpixels * 0.7;
     Screen('TextFont', win, 'Courier New');
     Screen('TextSize', win, 24);
     Screen('TextStyle', win);
-
+    Screen('TextColor', win, [255, 255 ,255]);
+    
 % Instruction text strings
 topInstructText = 'Select your investment (up to 5)';
 uppInstructText = 'Your opponent can invest up to 4';
@@ -248,6 +249,8 @@ while noClickYet % as long as this is true
         %         end
     end
 end
+
+WaitSecs(2);
 
 sca
 
