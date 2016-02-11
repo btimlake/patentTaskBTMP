@@ -5,7 +5,7 @@
 % Tobias Larsen, November 2015
 % modified and amended Ben Timberlake, Feburary 2016
 
-% function [player1Earnings] = patentTask(player2Strategy)
+function [player1Earnings] = patentTaskBTMP(player2Strategy)
 
 PRIZE=10;                               % Winnings aside from bidding endowment, currently a fixed value
 NUMROUNDS=20;                           % Number of rounds played against this opponent
@@ -26,21 +26,6 @@ player2Strategy='random'; %COMMENT AFTER DEBUGGING
 %     player2Strategy='random';
 % end
 
-%% Patent race task screen progression
-% 		
-% 3 screens
-% Steps
-% 1 Rectangles display
-% w/o underlying behavior (i.e. any button to get to next scren)
-% 
-% 2 integrate mathematics
-% 
-% 3 write to log file
-% 
-% ====
-% Tuesday: Graphical portion
-
-
 %% Screen 1: Presentation
 
 % win = 10 %COMMENT AFTER DEBUGGING
@@ -58,52 +43,42 @@ baseRect = [0 0 30 40];
 % Get the centre coordinate of the window
 [xCenter, yCenter] = RectCenter(screenRect);
 
-% Screen X positions of top five rectangles
+%Rectangle positions
 topRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45];
-numtopRect = length(topRectXpos);
-% Screen X positions of upper four rectangles
+numtopRect = length(topRectXpos); % Screen X positions of top five rectangles
 uppRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36];
-numuppRect = length(uppRectXpos);
-% Screen X positions of bottom ten rectangles
+numuppRect = length(uppRectXpos); % Screen X positions of upper four rectangles
 botRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45 screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 screenXpixels * 0.81 screenXpixels * 0.9];
-numbotRect = length(botRectXpos);
+numbotRect = length(botRectXpos); % Screen X positions of bottom ten rectangles
+topRectYpos = screenYpixels * 0.2; % Screen Y positions of top five rectangles
+uppRectYpos = screenYpixels * 0.4; % Screen Y positions of upper four rectangles
+botRectYpos = screenYpixels * 0.8; % Screen Y positions of bottom ten rectangles
 
-% Screen Y positions of top five rectangles
-topRectYpos = screenYpixels * 0.2;
-% Screen Y positions of upper four rectangles
-uppRectYpos = screenYpixels * 0.4;
-% Screen Y positions of bottom ten rectangles
-botRectYpos = screenYpixels * 0.8;
-
-% Make coordinates for top row of rectangles
-topRects = nan(4, 3);
+% Rectangle coordinates
+topRects = nan(4, 3); % Make coordinates for top row of rectangles
 for i = 1:numtopRect
     topRects(:, i) = CenterRectOnPointd(baseRect, topRectXpos(i), topRectYpos);
 end
 
-% Make coordinates for upper row of rectangles
-uppRects = nan(4, 3);
+uppRects = nan(4, 3); % Make coordinates for upper row of rectangles
 for i = 1:numuppRect
     uppRects(:, i) = CenterRectOnPointd(baseRect, uppRectXpos(i), uppRectYpos);
 end
 
-% Make coordinates for bottom row of rectangles
-botRects = nan(4, 3);
+botRects = nan(4, 3); % Make coordinates for bottom row of rectangles
 for i = 1:numbotRect
     botRects(:, i) = CenterRectOnPointd(baseRect, botRectXpos(i), botRectYpos);
 end
 
-%set colors to blue, yellow, green
-topColors = [0, 0, 255];
-uppColors = [255, 200, 0];
-botColors = [40, 155, 40];
+%set colors 
+topColors = [0, 0, 255]; % blue
+uppColors = [255, 200, 0]; % yellow
+botColors = [40, 155, 40]; % green
 
-% Screen Y positions of top text
-topTextYpos = screenYpixels * 0.1;
-% Screen Y positions of upper text
-uppTextYpos = screenYpixels * 0.3;
-% Screen Y positions of bottom text
-botTextYpos = screenYpixels * 0.7;
+% Text positions
+topTextYpos = screenYpixels * 0.1; % Screen Y positions of top text
+uppTextYpos = screenYpixels * 0.3; % Screen Y positions of upper text
+botTextYpos = screenYpixels * 0.7; % Screen Y positions of bottom text
 
 % Select specific text font, style and size:
     Screen('TextFont', win, 'Courier New');
@@ -115,16 +90,7 @@ botTextYpos = screenYpixels * 0.7;
 topInstructText = ['Select your investment (0 - ' num2str(PLAYER1MAXBID) ')'];
 uppInstructText = ['Your opponent can invest up to ' num2str(PLAYER2MAXBID) '.'];
 botInstructText = 'You can win 10, plus the amount you don''t invest';
-topWarningText = ['Your investment must be between 0 and ' num2str(PLAYER1MAXBID) '.']
-% Selection text strings
-topSelectText = ['You invested ' num2str(player1Choice(i)) '.']
-uppSelectText = 'Your opponent can invest up to 4';
-botSelectText = botInstructText;
-% Win Result text strings
-topWinText = topSelectText;
-uppWinText = ['Your opponent invested ' num2str(player2Choice(i)-1) '.'];
-botWinText = ['You earned ' num2str(player1Earnings(i)) ' in this round.']; %Why the sum? Should it just be for that round
-lowWinText = ['Your opponent earned ' num2str(player2Earnings(i)) ' in this round.']; 
+topWarningText = ['Your investment must be between 0 and ' num2str(PLAYER1MAXBID) '.'];
 
 % Lose Result text strings
 % topLoseText = topSelectText;
@@ -139,16 +105,20 @@ DrawFormattedText(win, topInstructText, topRectXpos(1), topTextYpos); % Draw bet
 Screen('FrameRect', win, topColors, topRects); % Draw the top rects to the screen
 DrawFormattedText(win, uppInstructText, uppRectXpos(1), uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-DrawFormattedText(win, botInstructText, botRectXpos(1), botTextYpos) % Draw reward explanation
+DrawFormattedText(win, botInstructText, botRectXpos(1), botTextYpos); % Draw reward explanation
 Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
 Screen('Flip', win); % Flip to the screen
 
-[keyPressed keyTime keyCode]=KbCheck;
+player1Choice(i)=input('Choice:');     % Get keyboard input from player1
 
-player1Choice(i)=input();     % Get keyboard input from player1
+break
 
 end
 
+% Selection text strings
+topSelectText = ['You invested ' num2str(player1Choice(i)) '.']
+uppSelectText = 'Your opponent can invest up to 4';
+botSelectText = botInstructText;
 
     while(player1Choice(i) > PLAYER1MAXBID || player1Choice(i) < 0)             % Make sure the bid is within allowed range
         
@@ -181,8 +151,14 @@ selectedRects = topRects(:,1:playerSelection);
 unSelected = playerSelection + 1;
 unselectedRects = topRects(:,unSelected:5);
 
+% Win Result text strings
+topWinText = topSelectText;
+uppWinText = ['Your opponent invested ' num2str(player2Choice(i)-1) '.'];
+botWinText = ['You earned ' num2str(player1Earnings(i)) ' in this round.']; %Why the sum? Should it just be for that round
+lowWinText = ['Your opponent earned ' num2str(player2Earnings(i)) ' in this round.']; 
+
 % Draw choice explanation
-DrawFormattedText(win, topSelectText, topRectXpos(1), topTextYpos)
+DrawFormattedText(win, topSelectText, topRectXpos(1), topTextYpos);
 Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
 Screen('FrameRect', win, topColors, unselectedRects);
 DrawFormattedText(win, uppSelectText, uppRectXpos(1), uppTextYpos); % Draw opponent explanation
@@ -195,9 +171,11 @@ WaitSecs(1);
 
 %% Screen 3: Result
 weakSelection = num2str(player2Choice(i)-1);
-weakselRects = uppRects(:,1:weakSelection);
-weakunSelected = weakSelection + 1;
+weakselRects = uppRects(:,1:str2num(weakSelection));
+weakunSelected = (str2num(weakSelection) + 1);
 weakunselRects = uppRects(:,weakunSelected:4);
+
+% display('test')
 
 DrawFormattedText(win, topSelectText, topRectXpos(1), topTextYpos); % Draw strong outcome
 Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
@@ -210,9 +188,9 @@ DrawFormattedText(win, botWinText, botRectXpos(1), botTextYpos, botColors); % Dr
 Screen('FillRect', win, botColors, botRects); % Draw the bottom rects to the screen
 Screen('Flip', win); % Flip to the screen
 
+WaitSecs(10);
 
-% function %RESTORE AFTER DEBUGGING
-[player2Options] = player2Update(player2Options, player2Strategy, player2Choice, player2Earnings, player1Choice, PRIZE, PLAYER2MAXBID)
+function [player2Options] = player2Update(player2Options, player2Strategy, player2Choice, player2Earnings, player1Choice, PRIZE, PLAYER2MAXBID)
     alpha=0.5;  % learning rate for how quickly player2 adapts
 
     switch lower(player2Strategy)
@@ -228,3 +206,6 @@ Screen('Flip', win); % Flip to the screen
 end
 
 sca
+
+end
+
