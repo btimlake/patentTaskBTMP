@@ -55,17 +55,17 @@ uppRectYpos = screenYpixels * 0.4; % Screen Y positions of upper four rectangles
 botRectYpos = screenYpixels * 0.8; % Screen Y positions of bottom ten rectangles
 
 % Rectangle coordinates
-topRects = nan(4, 3); % Make coordinates for top row of rectangles
+topRects = nan(4, numtopRect); % Make coordinates for top row of rectangles
 for i = 1:numtopRect
     topRects(:, i) = CenterRectOnPointd(baseRect, topRectXpos(i), topRectYpos);
 end
 
-uppRects = nan(4, 3); % Make coordinates for upper row of rectangles
+uppRects = nan(4, numuppRect); % Make coordinates for upper row of rectangles
 for i = 1:numuppRect
     uppRects(:, i) = CenterRectOnPointd(baseRect, uppRectXpos(i), uppRectYpos);
 end
 
-botRects = nan(4, 3); % Make coordinates for bottom row of rectangles
+botRects = nan(4, numbotRect); % Make coordinates for bottom row of rectangles
 for i = 1:numbotRect
     botRects(:, i) = CenterRectOnPointd(baseRect, botRectXpos(i), botRectYpos);
 end
@@ -111,14 +111,13 @@ Screen('Flip', win); % Flip to the screen
 
 player1Choice(i)=input('Choice:');     % Get keyboard input from player1
 
-break
-
-end
 
 % Selection text strings
 topSelectText = ['You invested ' num2str(player1Choice(i)) '.']
 uppSelectText = 'Your opponent can invest up to 4';
 botSelectText = botInstructText;
+
+% DELETE this when change input functionality to arrow selection
 
     while(player1Choice(i) > PLAYER1MAXBID || player1Choice(i) < 0)             % Make sure the bid is within allowed range
         
@@ -134,7 +133,8 @@ botSelectText = botInstructText;
         Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen
         Screen('Flip', win); % Flip to the screen
         
-        break
+        player1Choice(i)=input('Choice:');     % Get keyboard input from player1 (script pauses for input and if still invalid goes back into while loop. if valid, leaves while loop)
+        
     end
     
     player1ChoiceInd = player1Choice(i)+1;      %because choosing 0 is an option, there's a discrepancy between choices and index of options...
@@ -188,7 +188,9 @@ DrawFormattedText(win, botWinText, botRectXpos(1), botTextYpos, botColors); % Dr
 Screen('FillRect', win, botColors, botRects); % Draw the bottom rects to the screen
 Screen('Flip', win); % Flip to the screen
 
-WaitSecs(10);
+WaitSecs(4);
+
+end
 
 function [player2Options] = player2Update(player2Options, player2Strategy, player2Choice, player2Earnings, player1Choice, PRIZE, PLAYER2MAXBID)
     alpha=0.5;  % learning rate for how quickly player2 adapts

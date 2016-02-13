@@ -111,9 +111,6 @@ Screen('Flip', win); % Flip to the screen
 
 player1Choice(i)=input('Choice:');     % Get keyboard input from player1
 
-break
-
-end
 
 % Selection text strings
 topSelectText = ['You invested ' num2str(player1Choice(i)) '.']
@@ -175,7 +172,7 @@ weakselRects = uppRects(:,1:str2num(weakSelection));
 weakunSelected = (str2num(weakSelection) + 1);
 weakunselRects = uppRects(:,weakunSelected:4);
 
-display('test')
+% display('test')
 
 DrawFormattedText(win, topSelectText, topRectXpos(1), topTextYpos); % Draw strong outcome
 Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
@@ -188,7 +185,9 @@ DrawFormattedText(win, botWinText, botRectXpos(1), botTextYpos, botColors); % Dr
 Screen('FillRect', win, botColors, botRects); % Draw the bottom rects to the screen
 Screen('Flip', win); % Flip to the screen
 
-WaitSecs(1);
+WaitSecs(4);
+
+end
 
 function [player2Options] = player2Update(player2Options, player2Strategy, player2Choice, player2Earnings, player1Choice, PRIZE, PLAYER2MAXBID)
     alpha=0.5;  % learning rate for how quickly player2 adapts
@@ -204,8 +203,6 @@ function [player2Options] = player2Update(player2Options, player2Strategy, playe
     end
 
 end
-
-WaitSecs(10);
 
 sca
 
