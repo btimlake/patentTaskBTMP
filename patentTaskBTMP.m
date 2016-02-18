@@ -18,6 +18,7 @@ player1Earnings=nan(NUMROUNDS,1);       % Keeps track of winnings for player1
 player2Earnings=nan(NUMROUNDS,1);       % Keeps track of winnings for player2
 player1Choice=nan(NUMROUNDS,1);         % Keeps track of player1 choices
 player2Choice=nan(NUMROUNDS,1);         % Keeps track of player2 choices
+trialLength=nan(NUMROUNDS,1);           % Keeps track of length of each trial
 % player2Strategy='Fictive';
 player2Strategy='random'; %COMMENT AFTER DEBUGGING
 
@@ -30,7 +31,7 @@ player2Strategy='random'; %COMMENT AFTER DEBUGGING
 
 % win = 10 %COMMENT AFTER DEBUGGING
 % screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
-[win, screenRect] = Screen('OpenWindow', 0, [0 0 0], [0 0 640 480]);
+[win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255], [0 0 640 480]); %black background
 
 % Make a base Rect of 30 by 40 pixels
 baseRect = [0 0 30 40];
@@ -71,9 +72,9 @@ for i = 1:numbotRect
 end
 
 %set colors 
-topColors = [0, 0, 255]; % blue
-uppColors = [255, 200, 0]; % yellow
-botColors = [40, 155, 40]; % green
+topColors = [0, 0, 0]; % black
+uppColors = [0, 0, 0]; % black
+botColors = [0, 0, 0]; % black
 
 % Text positions
 topTextYpos = screenYpixels * 0.1; % Screen Y positions of top text
@@ -84,13 +85,13 @@ botTextYpos = screenYpixels * 0.7; % Screen Y positions of bottom text
     Screen('TextFont', win, 'Courier New');
     Screen('TextSize', win, 24);
     Screen('TextStyle', win);
-    Screen('TextColor', win, [255, 255 ,255]);
+    Screen('TextColor', win, [0, 0, 0]);
     
 % Instruction text strings
 topInstructText = ['Select your investment (0 - ' num2str(PLAYER1MAXBID) ')'];
 uppInstructText = ['Your opponent can invest up to ' num2str(PLAYER2MAXBID) '.'];
 botInstructText = 'You can win 10, plus the amount you don''t invest';
-topWarningText = ['Your investment must be between 0 and ' num2str(PLAYER1MAXBID) '.'];
+% topWarningText = ['Your investment must be between 0 and ' num2str(PLAYER1MAXBID) '.'];
 
 % Lose Result text strings
 % topLoseText = topSelectText;
@@ -108,12 +109,72 @@ Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the scr
 DrawFormattedText(win, botInstructText, botRectXpos(1), botTextYpos); % Draw reward explanation
 Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
 Screen('Flip', win); % Flip to the screen
+        trialStartTime(i) = GetSecs;
 
-player1Choice(i)=input('Choice:');     % Get keyboard input from player1
+% myString=[];
+% while true
+% [keyPressed keyTime keyCode]=KbCheck;
+% if keyPressed
+% keyName=KbName(keyCode);
+% if strcmp(keyName,'Return')
+% break
+% end
+% keyName='';
+% [keyTime keyCode]=KbWait
+% keyName=KbName(keyCode)
+% disp(keyName(1))
+% 
+% 
+%     [secs, keyCode, deltaSecs] = KbWait([deviceNumber][, forWhat=0][, untilTime=inf])
+%     [keyIsDown, secs, keyCode, deltaSecs] = KbCheck
 
+currPlayerSelection=0;     % Set starting choice
+keyName=''; % empty initial value
+
+while(~strcmp(keyName,'space')) % continues until current keyName is space
+%     keyName('space', 'LeftArrow', 'RightArrow')
+
+[keyTime keyCode]=KbWait([],2);
+keyName=KbName(keyCode);
+
+        switch keyName
+            case 'LeftArrow' 
+                currPlayerSelection = currPlayerSelection - 1;
+                if currPlayerSelection < 0
+                    currPlayerSelection = 0;
+                end
+            case 'RightArrow'
+                currPlayerSelection = currPlayerSelection + 1;
+                if currPlayerSelection > PLAYER1MAXBID
+                    currPlayerSelection = PLAYER1MAXBID;
+                end
+%             case 'space'
+%             currPlayerSelection = player1Choice(i), exit switch
+        end
+        
+        % update selection to last button press
+SelectedRects = topRects(:,1:currPlayerSelection);
+currUnselectRects = currPlayerSelection + 1;
+unselectedRects = topRects(:,currUnselectRects:5);
+            
+% Redraw current selection
+DrawFormattedText(win, topInstructText, topRectXpos(1), topTextYpos);
+Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
+Screen('FrameRect', win, topColors, unselectedRects);
+DrawFormattedText(win, uppInstructText, uppRectXpos(1), uppTextYpos); % Draw opponent explanation
+Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
+DrawFormattedText(win, botInstructText, botRectXpos(1), botTextYpos); % Draw reward explanation
+Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen
+Screen('Flip', win); % Flip to the screen
+
+        
+end
+
+trialEndTime(i) = GetSecs;
+player1Choice(i) = currPlayerSelection; 
 
 % Selection text strings
-topSelectText = ['You invested ' num2str(player1Choice(i)) '.']
+topSelectText = ['You invested ' num2str(player1Choice(i)) '.'];
 uppSelectText = 'Your opponent can invest up to 4';
 botSelectText = botInstructText;
 
@@ -154,7 +215,7 @@ unselectedRects = topRects(:,unSelected:5);
 % Win Result text strings
 topWinText = topSelectText;
 uppWinText = ['Your opponent invested ' num2str(player2Choice(i)-1) '.'];
-botWinText = ['You earned ' num2str(player1Earnings(i)) ' in this round.']; %Why the sum? Should it just be for that round
+botWinText = ['You earned ' num2str(player1Earnings(i)) ' in this round.']; 
 lowWinText = ['Your opponent earned ' num2str(player2Earnings(i)) ' in this round.']; 
 
 % Draw choice explanation
@@ -183,7 +244,7 @@ Screen('FrameRect', win, topColors, unselectedRects);
 DrawFormattedText(win, uppWinText, uppRectXpos(1), uppTextYpos); % Draw weak outcome
 Screen('FillRect', win, uppColors, weakselRects); % Draw the upper rects to the screen
 Screen('FrameRect', win, uppColors, weakunselRects);
-    Screen('TextStyle', win, 1); % change style to bold
+%     Screen('TextStyle', win, 1); % change style to bold
 DrawFormattedText(win, botWinText, botRectXpos(1), botTextYpos, botColors); % Draw reward explanation
 Screen('FillRect', win, botColors, botRects); % Draw the bottom rects to the screen
 Screen('Flip', win); % Flip to the screen
@@ -208,6 +269,15 @@ function [player2Options] = player2Update(player2Options, player2Strategy, playe
 end
 
 sca
+
+
+%% End-of-block calculations and create log file
+for i=1:NUMROUNDS
+        trialLength(i) = trialEndTime(i)-trialStartTime(i);
+end
+
+
+
 
 end
 
