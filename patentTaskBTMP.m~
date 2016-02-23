@@ -27,21 +27,21 @@ player2Strategy='random'; %COMMENT AFTER DEBUGGING
 %     player2Strategy='random';
 % end
 
-%% Screen 1: Presentation
+%% Screen 0: Participant number entry
 
 % win = 10 %COMMENT AFTER DEBUGGING
 % screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
-[win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255], [0 0 640 480]); %black background
+% [win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255], [0 0 640 480]); %white background
+[win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255]); %white background
 
-% Make a base Rect of 30 by 40 pixels
-baseRect = [0 0 30 40];
+%set colors 
+topColors = [0, 0, 0]; % black
+uppColors = [0, 0, 0]; % black
+botColors = [0, 0, 0]; % black
 
 % Get the size of the on-screen window
-% screenXpixels=640 %COMMENT AFTER DEBUGGING
-% screenYpixels=480 %COMMENT AFTER DEBUGGING
 [screenXpixels, screenYpixels] = Screen('WindowSize', win);
-% RESTORE AFTER DEBUGGING
-% Get the centre coordinate of the window
+% Get the center coordinate of the window
 [xCenter, yCenter] = RectCenter(screenRect);
 
 %Rectangle positions
@@ -49,11 +49,42 @@ topRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 sc
 numtopRect = length(topRectXpos); % Screen X positions of top five rectangles
 uppRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36];
 numuppRect = length(uppRectXpos); % Screen X positions of upper four rectangles
-botRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45 screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 screenXpixels * 0.81 screenXpixels * 0.9];
-numbotRect = length(botRectXpos); % Screen X positions of bottom ten rectangles
-topRectYpos = screenYpixels * 0.2; % Screen Y positions of top five rectangles
-uppRectYpos = screenYpixels * 0.4; % Screen Y positions of upper four rectangles
-botRectYpos = screenYpixels * 0.8; % Screen Y positions of bottom ten rectangles
+lowRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45 screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 screenXpixels * 0.81 screenXpixels * 0.9];
+numlowRect = length(lowRectXpos); % Screen X positions of lower ten rectangles
+botRectXpos = [screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 screenXpixels * 0.81 screenXpixels * 0.9];
+numbotRect = length(botRectXpos); % Screen X positions of bottom five rectangles
+topRectYpos = screenYpixels * 7/40; % Screen Y positions of top five rectangles (4/40)
+uppRectYpos = screenYpixels * 16/40; % Screen Y positions of upper four rectangles (13/40)
+lowRectYpos = screenYpixels * 27/40; % Screen Y positions of lower ten rectangles (24/40)
+botRectYpos = screenYpixels * 34/40; % Screen Y positions of bottom five rectangles (31/40)
+
+% Text positions
+topTextYpos = screenYpixels * 2/40; % Screen Y positions of top text (3/40)
+uppTextYpos = screenYpixels * 11/40; % Screen Y positions of upper text (12/40)
+lowTextYpos = screenYpixels * 22/40; % Screen Y positions of lower text (23/40)
+botTextYpos = screenYpixels * 30/40; % Screen Y positions of bottom text 
+textXpos = screenXpixels * 0.09 - 2/56;
+
+% Select specific text font, style and size:
+fontSize = screenYpixels * 2/40;
+    Screen('TextFont', win, 'Courier New');
+    Screen('TextSize', win, fontSize);
+    Screen('TextStyle', win);
+    Screen('TextColor', win, [0, 0, 0]);
+    
+% participantNumber(i)=input('Enter your:');     % Get keyboard input from player1 (script pauses for input and if still invalid goes back into while loop. if valid, leaves while loop)
+
+%% Screen 1: Presentation
+
+% win = 10 %COMMENT AFTER DEBUGGING
+% screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
+% [win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255], [0 0 640 480]); %white background
+
+% Make a base Rect 4/56th of the screen width and 5/33rds of the height
+rectWidth = screenXpixels * 4 / 56;
+rectHeight = screenYpixels * 5 / 40;
+baseRect = [0 0 rectWidth rectHeight];
+
 
 % Rectangle coordinates
 topRects = nan(4, numtopRect); % Make coordinates for top row of rectangles
@@ -66,27 +97,17 @@ for i = 1:numuppRect
     uppRects(:, i) = CenterRectOnPointd(baseRect, uppRectXpos(i), uppRectYpos);
 end
 
+
+lowRects = nan(4, numlowRect); % Make coordinates for bottom row of rectangles
+for i = 1:numlowRect
+    lowRects(:, i) = CenterRectOnPointd(baseRect, lowRectXpos(i), lowRectYpos);
+end
+
 botRects = nan(4, numbotRect); % Make coordinates for bottom row of rectangles
 for i = 1:numbotRect
     botRects(:, i) = CenterRectOnPointd(baseRect, botRectXpos(i), botRectYpos);
 end
 
-%set colors 
-topColors = [0, 0, 0]; % black
-uppColors = [0, 0, 0]; % black
-botColors = [0, 0, 0]; % black
-
-% Text positions
-topTextYpos = screenYpixels * 0.1; % Screen Y positions of top text
-uppTextYpos = screenYpixels * 0.3; % Screen Y positions of upper text
-botTextYpos = screenYpixels * 0.7; % Screen Y positions of bottom text
-
-% Select specific text font, style and size:
-    Screen('TextFont', win, 'Courier New');
-    Screen('TextSize', win, 24);
-    Screen('TextStyle', win);
-    Screen('TextColor', win, [0, 0, 0]);
-    
 % Instruction text strings
 topInstructText = ['Select your investment (0 - ' num2str(PLAYER1MAXBID) ')'];
 uppInstructText = ['Your opponent can invest up to ' num2str(PLAYER2MAXBID) '.'];
@@ -102,11 +123,12 @@ botInstructText = 'You can win 10, plus the amount you don''t invest';
 for i=1:NUMROUNDS
     
 % Instruction screen
-DrawFormattedText(win, topInstructText, topRectXpos(1), topTextYpos); % Draw betting instructions
+DrawFormattedText(win, topInstructText, textXpos, topTextYpos); % Draw betting instructions
 Screen('FrameRect', win, topColors, topRects); % Draw the top rects to the screen
-DrawFormattedText(win, uppInstructText, uppRectXpos(1), uppTextYpos); % Draw opponent explanation
+DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-DrawFormattedText(win, botInstructText, botRectXpos(1), botTextYpos); % Draw reward explanation
+DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
+Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
 Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
 Screen('Flip', win); % Flip to the screen
         trialStartTime(i) = GetSecs;
@@ -134,9 +156,8 @@ keyName=''; % empty initial value
 while(~strcmp(keyName,'space')) % continues until current keyName is space
 %     keyName('space', 'LeftArrow', 'RightArrow')
 
-[keyTime keyCode]=KbWait;
+[keyTime, keyCode]=KbWait([],2);
 keyName=KbName(keyCode);
-disp(keyName(1))
 
         switch keyName
             case 'LeftArrow' 
@@ -154,21 +175,67 @@ disp(keyName(1))
         end
         
         % update selection to last button press
-currSelectedRects = topRects(:,1:currPlayerSelection);
-currUnselectRects = currPlayerSelection + 1;
-unselectedRects = topRects(:,currUnselectRects:5);
-            
-% Redraw current selection
+% SelectedRects = topRects(:,1:currPlayerSelection);
+% unselectedRects = topRects(:,currUnselectRects:PLAYER1MAXBID);
+currUnselectRects = currPlayerSelection;
+
+if currPlayerSelection == 0
+%     currPlayerSelection = 0;
+%     SelectedRects = topRects(0,:);
+    unselectedRects = topRects(:,1:PLAYER1MAXBID);
 DrawFormattedText(win, topInstructText, topRectXpos(1), topTextYpos);
-Screen('FillRect', win, topColors, currSelectedRects); % Draw the top rects to the screen
-Screen('FrameRect', win, topColors, currUnselectRects);
-% Screen('FrameRect', win, topColors, topRects); % Draw the top rects to the screen
+% Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
+Screen('FrameRect', win, topColors, unselectedRects);
 DrawFormattedText(win, uppInstructText, uppRectXpos(1), uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-DrawFormattedText(win, botInstructText, botRectXpos(1), botTextYpos); % Draw reward explanation
-Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen
+DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
+Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
+Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
 Screen('Flip', win); % Flip to the screen
 
+elseif currUnselectRects > PLAYER1MAXBID
+SelectedRects = topRects(:,1:currPlayerSelection);
+currUnselectRects = PLAYER1MAXBID;
+% unselectedRects = topRects(:,currUnselectRects:PLAYER1MAXBID);
+%     SelectedRects = topRects(:,:);
+%     unselectedRects = topRects(0,:);
+DrawFormattedText(win, topInstructText, topRectXpos(1), topTextYpos);
+Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
+% Screen('FrameRect', win, topColors, unselectedRects);
+DrawFormattedText(win, uppInstructText, uppRectXpos(1), uppTextYpos); % Draw opponent explanation
+Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
+DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
+Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
+Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
+Screen('Flip', win); % Flip to the screen
+ 
+else
+SelectedRects = topRects(:,1:currPlayerSelection);
+currUnselectRects = currPlayerSelection + 1;
+unselectedRects = topRects(:,currUnselectRects:PLAYER1MAXBID);
+
+DrawFormattedText(win, topInstructText, topRectXpos(1), topTextYpos);
+Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
+Screen('FrameRect', win, topColors, unselectedRects);
+DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
+Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
+DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
+Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
+Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
+Screen('Flip', win); % Flip to the screen
+
+end
+            
+% Redraw current selection
+% DrawFormattedText(win, topInstructText, topRectXpos(1), topTextYpos);
+% Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
+% Screen('FrameRect', win, topColors, unselectedRects);
+% DrawFormattedText(win, uppInstructText, uppRectXpos(1), uppTextYpos); % Draw opponent explanation
+% Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
+% DrawFormattedText(win, botInstructText, botRectXpos(1), lowTextYpos); % Draw reward explanation
+% Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen
+% Screen('Flip', win); % Flip to the screen
+% 
         
 end
 
@@ -176,7 +243,7 @@ trialEndTime(i) = GetSecs;
 player1Choice(i) = currPlayerSelection; 
 
 % Selection text strings
-topSelectText = ['You invested ' num2str(player1Choice(i)) '.']
+topSelectText = ['You invested ' num2str(player1Choice(i)) '.'];
 uppSelectText = 'Your opponent can invest up to 4';
 botSelectText = botInstructText;
 
@@ -192,7 +259,7 @@ botSelectText = botInstructText;
         Screen('FrameRect', win, topColors, topRects); % Draw the top rects to the screen
         DrawFormattedText(win, uppInstructText, uppRectXpos(1), uppTextYpos); % Draw opponent explanation
         Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-        DrawFormattedText(win, botInstructText, botRectXpos(1), botTextYpos) % Draw reward explanation
+        DrawFormattedText(win, botInstructText, botRectXpos(1), lowTextYpos) % Draw reward explanation
         Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen
         Screen('Flip', win); % Flip to the screen
         
@@ -226,7 +293,7 @@ Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the s
 Screen('FrameRect', win, topColors, unselectedRects);
 DrawFormattedText(win, uppSelectText, uppRectXpos(1), uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-DrawFormattedText(win, botSelectText, botRectXpos(1), botTextYpos); % Draw reward explanation
+DrawFormattedText(win, botSelectText, botRectXpos(1), lowTextYpos); % Draw reward explanation
 Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen
 Screen('Flip', win); % Flip to the screen
 
@@ -247,7 +314,7 @@ DrawFormattedText(win, uppWinText, uppRectXpos(1), uppTextYpos); % Draw weak out
 Screen('FillRect', win, uppColors, weakselRects); % Draw the upper rects to the screen
 Screen('FrameRect', win, uppColors, weakunselRects);
 %     Screen('TextStyle', win, 1); % change style to bold
-DrawFormattedText(win, botWinText, botRectXpos(1), botTextYpos, botColors); % Draw reward explanation
+DrawFormattedText(win, botWinText, botRectXpos(1), lowTextYpos, botColors); % Draw reward explanation
 Screen('FillRect', win, botColors, botRects); % Draw the bottom rects to the screen
 Screen('Flip', win); % Flip to the screen
 
