@@ -16,7 +16,7 @@ baseRect = [0 0 30 40];
 [xCenter, yCenter] = RectCenter(screenRect);
 
 % Screen X positions of top five rectangles
-topRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45];
+topRectXpos = round([screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45]);
 numtopRect = length(topRectXpos);
 % Screen X positions of upper four rectangles
 uppRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36];
@@ -93,27 +93,32 @@ Screen('Flip', win);
 noClickYet=true;
 buttons(1)=0;
 
-while ~any(buttons) % wait for press
-     [x,y,buttons] = GetMouse;
+while ~any(buttons) % wait for release
+    [mouseX,mouseY,buttons] = GetMouse;
+%     if buttons(1)
+    if(any(buttons))
+        if((mouseY >= topRectYpos-(baseRect(4)/2)) && (mouseY <= topRectYpos+(baseRect(4)/2)))
+            if((mouseX >= topRectXpos(1)-(baseRect(3)/2)) && (mouseX <= topRectXpos(1)+(baseRect(3)/2)))
+                selection=1;
+            elseif((mouseX >= topRectXpos(2)-(baseRect(3)/2)) && (mouseX <= topRectXpos(2)+(baseRect(3)/2)))
+                selection=2;         
+            elseif((mouseX >= topRectXpos(3)-(baseRect(3)/2)) && (mouseX <= topRectXpos(3)+(baseRect(3)/2)))
+                selection=3;
+            elseif((mouseX >= topRectXpos(4)-(baseRect(3)/2)) && (mouseX <= topRectXpos(4)+(baseRect(3)/2)))
+                selection=4;
+            elseif((mouseX >= topRectXpos(5)-(baseRect(3)/2)) && (mouseX <= topRectXpos(5)+(baseRect(3)/2)))
+                selection=5;
+            else
+                buttons(1)=0;
+            end
+        else
+            buttons(1)=0;
+        end
+    end
 end
 
-while any(buttons) % wait for release
-[mouseX,mouseY,buttons] = GetMouse;
-    if buttons(1)
-        noClickYet=false;
-%             mouseX
-%             mouseY
-        %         for k = 1:totalNumberRect %for each rect, this loop check if the button was within the coordinates.
-        %             thisRect= myTrials(k).rect;
-        %             if mouseX>thisRect(1) & ...
-        %                     mouseX<thisRect(3) & ...
-        %                     mouseY>thisRect(2) & ...
-        %                     mouseY<thisRect(4)
-        %                 myTrials(k)=[];
-        %                 break
-        %             end
-        %         end
-    end
+while any(buttons) % wait for press
+     [x,y,buttons] = GetMouse;
 end
 
 % while noClickYet % as long as this is true
@@ -140,7 +145,7 @@ end
 %% Screen 2: Player's selection
 buttons(1) = 0;
 
-playerSelection = 4;
+playerSelection = selection;
 selectedRects = topRects(:,1:playerSelection);
 unSelected = playerSelection + 1;
 unselectedRects = topRects(:,unSelected:5);
@@ -178,7 +183,6 @@ while noClickYet % as long as this is true
     if buttons(1)
         buttons
         noClickYet=false
-        display('test')
         %         for k = 1:totalNumberRect %for each rect, this loop check if the button was within the coordinates.
         %             thisRect= myTrials(k).rect;
         %             if mouseX>thisRect(1) & ...
