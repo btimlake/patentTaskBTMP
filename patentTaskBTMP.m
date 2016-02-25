@@ -21,15 +21,35 @@ player2Choice=nan(NUMROUNDS,1);         % Keeps track of player2 choices
 trialLength=nan(NUMROUNDS,1);           % Keeps track of length of each trial
 % player2Strategy='Fictive';
 player2Strategy='random'; %COMMENT AFTER DEBUGGING
+fixationDelay = 4 + (8-4).*rand(NUMROUNDS,1); % Creates array of random fixation cross presentation time of 4-8 seconds
+feedbackDelay = 2 + (6-2).*rand(NUMROUNDS,1); % Creates array of random delay between choice and feedback of 2-6 seconds
 
 %RESTORE AFTER DEBUGGING
 % if (nargin<1)                           % If the function is called without update method
 %     player2Strategy='random';
 % end
+Screen('Preference', 'SkipSyncTests', 1); %COMMENT AFTER DEBUGGING
 
-%% Screen 0: Participant number entry
+%% Screen -1: Participant number entry
 
+%%% Enter participant number (taken from:
+%%% http://www.academia.edu/2614964/Creating_experiments_using_Matlab_and_Psychtoolbox)
+fail1='Please enter a participant number.'; %error message
+prompt = {'Enter participant number:'};
+dlg_title ='New Participant';
+num_lines = 1;
+def = {'0'};
+answer = inputdlg(prompt,dlg_title,num_lines,def);%presents box to enterdata into
+switch isempty(answer)
+    case 1 %deals with both cancel and X presses 
+        error(fail1)
+    case 0
+        particNum=(answer{1});
+end
+
+%% Screen 0: Instructions
 % win = 10 %COMMENT AFTER DEBUGGING
+
 % screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
 % [win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255], [0 0 640 480]); %white background
 [win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255]); %white background
@@ -44,6 +64,7 @@ botColors = [0, 0, 0]; % black
 % Get the center coordinate of the window
 [xCenter, yCenter] = RectCenter(screenRect);
 
+
 %Rectangle positions
 topRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45];
 numtopRect = length(topRectXpos); % Screen X positions of top five rectangles
@@ -55,6 +76,7 @@ botRectXpos = [screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 sc
 numbotRect = length(botRectXpos); % Screen X positions of bottom five rectangles
 topRectYpos = screenYpixels * 7/40; % Screen Y positions of top five rectangles (4/40)
 uppRectYpos = screenYpixels * 16/40; % Screen Y positions of upper four rectangles (13/40)
+sepLineYpos = screenYpixels * 19/40; % Screen Y position of separator line
 lowRectYpos = screenYpixels * 27/40; % Screen Y positions of lower ten rectangles (24/40)
 botRectYpos = screenYpixels * 34/40; % Screen Y positions of bottom five rectangles (31/40)
 
@@ -64,6 +86,16 @@ uppTextYpos = screenYpixels * 11/40; % Screen Y positions of upper text (12/40)
 lowTextYpos = screenYpixels * 22/40; % Screen Y positions of lower text (23/40)
 botTextYpos = screenYpixels * 30/40; % Screen Y positions of bottom text 
 textXpos = (screenXpixels * 0.09 - screenXpixels * 2/56);
+lineEndXpos = (screenXpixels * 0.91 + screenXpixels * 2/56);
+% Instruct text positions
+instruct1TextYpos = screenYpixels * 2/40; 
+instruct2TextYpos = screenYpixels * 6/40; 
+instruct3TextYpos = screenYpixels * 10/40; 
+instruct4TextYpos = screenYpixels * 14/40; 
+instruct5TextYpos = screenYpixels * 18/40; 
+instruct6TextYpos = screenYpixels * 22/40; 
+instructbotTextYpos = screenYpixels * 30/40; 
+
 
 % Select specific text font, style and size:
 fontSize = screenYpixels * 2/40;
@@ -73,6 +105,49 @@ fontSize = screenYpixels * 2/40;
     Screen('TextColor', win, [0, 0, 0]);
     
 % participantNumber(i)=input('Enter your:');     % Get keyboard input from player1 (script pauses for input and if still invalid goes back into while loop. if valid, leaves while loop)
+
+instructText11 = ['You are competing against an opponent to win a prize in each trial.'];
+instructText12 = ['You can invest 0-' num2str(PLAYER1MAXBID) ' cards. Your opponent can invest 0-' num2str(PLAYER2MAXBID) '.'];
+instructText13 = ['The player who invests more wins 10.'];
+instructText14 = ['If both invest the same amount, neither player wins.'];
+instructText15 = ['Whatever you don''t invest, you keep.'];
+instructText16 = ['(e.g. if you invest 3, you keep 2, whether you win or lose.)'];
+instructText17 = ['Hit the SPACE bar to continue.'];
+instructText21 = ['Use the arrow keys to select how many to invest.'];
+instructText22 = ['Hit the SPACE bar to confirm your choice.'];
+
+keyName=''; % empty initial value
+
+while(~strcmp(keyName,'space')) % continues until current keyName is space
+%     keyName('space', 'LeftArrow', 'RightArrow')
+
+[keyTime, keyCode]=KbWait([],2);
+keyName=KbName(keyCode);
+
+DrawFormattedText(win, instructText11, 'center', instruct1TextYpos); % Draw betting instructions
+DrawFormattedText(win, instructText12, 'center', instruct2TextYpos); % Draw betting instructions
+DrawFormattedText(win, instructText14, 'center', instruct3TextYpos); % Draw betting instructions
+DrawFormattedText(win, instructText15, 'center', instruct4TextYpos); % Draw betting instructions
+DrawFormattedText(win, instructText16, 'center', instruct5TextYpos); % Draw betting instructions
+DrawFormattedText(win, instructText17, 'center', instructbotTextYpos); % Draw betting instructions
+Screen('Flip', win); % Flip to the screen
+
+end
+
+
+while(~strcmp(keyName,'space')) % continues until current keyName is space
+%     keyName('space', 'LeftArrow', 'RightArrow')
+
+[keyTime, keyCode]=KbWait([],2);
+keyName=KbName(keyCode);
+
+DrawFormattedText(win, instructText21, 'center', instruct1TextYpos); % Draw betting instructions
+DrawFormattedText(win, instructText22, 'center', instruct2TextYpos); % Draw betting instructions
+DrawFormattedText(win, instructText17, 'center', instructbotTextYpos); % Draw betting instructions
+Screen('Flip', win); % Flip to the screen
+
+end
+
 
 %% Screen 1: Presentation
 
@@ -120,13 +195,37 @@ botInstructText = 'You can win 10, plus the amount you don''t invest';
 % botLoseText = ['You saved ' num2str(sum(player1Earnings)) '.']; %Why the sum? Should it just be for that round
 % lowLoseText = ['Your opponent won ' num2str(sum(player2Earnings)) '.']; 
 
+% Trials begin here
 for i=1:NUMROUNDS
-    
-% Instruction screen
+
+%% Screen 1a: Fixation cross
+fixCrossDimPix = screenXpixels * 4 / 56; % Arm size
+
+% Now we set the coordinates (these are all relative to zero we will let
+% the drawing routine center the cross in the center of our monitor for us)
+xCoords = [-fixCrossDimPix fixCrossDimPix 0 0];
+yCoords = [0 0 -fixCrossDimPix fixCrossDimPix];
+allCoords = [xCoords; yCoords];
+
+% Set the line width for our fixation cross
+lineWidthPix = screenXpixels * 40 / 56;
+
+% Draw the fixation cross in white, set it to the center of our screen and set good quality antialiasing
+Screen('DrawLines', win, allCoords, lineWidthPix, uppColors, [xCenter yCenter], 2);
+
+% Flip to the screen
+Screen('Flip', win);
+
+% Wait for 4-8 seconds
+WaitSecs(fixationDelay(i));
+
+
+%% Screen 1b: Presentation screen
 DrawFormattedText(win, topInstructText, textXpos, topTextYpos); % Draw betting instructions
 Screen('FrameRect', win, topColors, topRects); % Draw the top rects to the screen
 DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
+Screen('DrawLine', win, textXpos, sepLineYpos, lineEndXpos, sepLineYpos, lineWidthPix); % Make this a line separating the sections
 DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
 Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
 Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
@@ -312,7 +411,7 @@ Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the sc
 % end
 Screen('Flip', win); % Flip to the screen
 
-WaitSecs(3);
+WaitSecs(feedbackDelay(i));
 
 %% Screen 3: Result
 weakSelection = num2str(player2Choice(i)-1);
@@ -365,8 +464,8 @@ function [player2Options] = player2Update(player2Options, player2Strategy, playe
         otherwise           % Default option is to not update the value of the options, making each choice random
             
     end
-
 end
+
 
 sca
 
@@ -377,7 +476,10 @@ for i=1:NUMROUNDS
 end
 
 
-
+save(['patent race ' particNum])
 
 end
+
+
+
 
