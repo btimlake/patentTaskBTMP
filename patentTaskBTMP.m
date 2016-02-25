@@ -193,21 +193,21 @@ Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the scr
 Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
 Screen('Flip', win); % Flip to the screen
 
-elseif currUnselectRects > PLAYER1MAXBID
-SelectedRects = topRects(:,1:currPlayerSelection);
-currUnselectRects = PLAYER1MAXBID;
-% unselectedRects = topRects(:,currUnselectRects:PLAYER1MAXBID);
-%     SelectedRects = topRects(:,:);
-%     unselectedRects = topRects(0,:);
-DrawFormattedText(win, topInstructText, textXpos, topTextYpos);
-Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
-% Screen('FrameRect', win, topColors, unselectedRects);
-DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
-Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
-Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
-Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
-Screen('Flip', win); % Flip to the screen
+% elseif currUnselectRects > PLAYER1MAXBID
+% SelectedRects = topRects(:,1:currPlayerSelection);
+% currUnselectRects = PLAYER1MAXBID;
+% % unselectedRects = topRects(:,currUnselectRects:PLAYER1MAXBID);
+% %     SelectedRects = topRects(:,:);
+% %     unselectedRects = topRects(0,:);
+% DrawFormattedText(win, topInstructText, textXpos, topTextYpos);
+% Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
+% % Screen('FrameRect', win, topColors, unselectedRects);
+% DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
+% Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
+% DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
+% Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
+% Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
+% Screen('Flip', win); % Flip to the screen
  
 else
 SelectedRects = topRects(:,1:currPlayerSelection);
@@ -249,24 +249,24 @@ botSelectText = botInstructText;
 
 % DELETE this when change input functionality to arrow selection
 
-    while(player1Choice(i) > PLAYER1MAXBID || player1Choice(i) < 0)             % Make sure the bid is within allowed range
-        
-        DrawFormattedText(win, topWarningText, textXpos, topTextYpos);        
-        Screen('Flip', win); % Flip to the screen
-        
-        % Instruction screen again
-        DrawFormattedText(win, topInstructText, textXpos, topTextYpos); % Draw betting instructions
-        Screen('FrameRect', win, topColors, topRects); % Draw the top rects to the screen
-        DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
-        Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-        DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
-        Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen
-        Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen
-        Screen('Flip', win); % Flip to the screen
-        
-        player1Choice(i)=input('Choice:');     % Get keyboard input from player1 (script pauses for input and if still invalid goes back into while loop. if valid, leaves while loop)
-        
-    end
+%     while(player1Choice(i) > PLAYER1MAXBID || player1Choice(i) < 0)             % Make sure the bid is within allowed range
+%         
+%         DrawFormattedText(win, topWarningText, textXpos, topTextYpos);        
+%         Screen('Flip', win); % Flip to the screen
+%         
+%         % Instruction screen again
+%         DrawFormattedText(win, topInstructText, textXpos, topTextYpos); % Draw betting instructions
+%         Screen('FrameRect', win, topColors, topRects); % Draw the top rects to the screen
+%         DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
+%         Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
+%         DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
+%         Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen
+%         Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen
+%         Screen('Flip', win); % Flip to the screen
+%         
+%         player1Choice(i)=input('Choice:');     % Get keyboard input from player1 (script pauses for input and if still invalid goes back into while loop. if valid, leaves while loop)
+%         
+%     end
     
     player1ChoiceInd = player1Choice(i)+1;      %because choosing 0 is an option, there's a discrepancy between choices and index of options...
     
