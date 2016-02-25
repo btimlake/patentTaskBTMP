@@ -210,12 +210,12 @@ Screen('Flip', win); % Flip to the screen
 % Screen('Flip', win); % Flip to the screen
  
 else
-selectedRects = topRects(:,1:currPlayerSelection);
+SelectedRects = topRects(:,1:currPlayerSelection);
 currUnselectRects = currPlayerSelection + 1;
 unselectedRects = topRects(:,currUnselectRects:PLAYER1MAXBID);
 
 DrawFormattedText(win, topInstructText, textXpos, topTextYpos);
-Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
+Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
 Screen('FrameRect', win, topColors, unselectedRects);
 DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
@@ -295,34 +295,18 @@ Screen('FrameRect', win, topColors, unselectedRects);
 DrawFormattedText(win, uppSelectText, textXpos, uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
 DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
-Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
-Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
-% Screen('FrameRect', win, botColors, unselectWinRects); % Draw the lower lost rects to the screen
-% Screen('FillRect', win, botColors, selectedWinRects); % Draw the lower retained rects to the screen
-% Screen('FrameillRect', win, topColors, selectedRects); % Draw the lower lost rects to the screen
-% Screen('FillRect', win, topColors, unselectedRects);
+Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen
+Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen
 
-% show filled rects if win / empty rects if lost
-% if player1Choice(i) > player2Choice(i)
-%     Screen('FillRect', win, botColors, rewardRects); % Draw the lower retained rects to the screen
-%     Screen('FillRect', win, botColors, botRects); % Draw the bottom won rects to the screen
-% else
-%     Screen('FrameRect', win, botColors, rewardRects); % Draw the lower lost rects to the screen
-%     Screen('FrameRect', win, botColors, botRects); % Draw the bottom lost rects to the screen
-% end
 Screen('Flip', win); % Flip to the screen
 
-WaitSecs(3);
+WaitSecs(1);
 
 %% Screen 3: Result
 weakSelection = num2str(player2Choice(i)-1);
 weakselRects = uppRects(:,1:str2num(weakSelection));
 weakunSelected = (str2num(weakSelection) + 1);
 weakunselRects = uppRects(:,weakunSelected:4);
-selectedWinRects = lowRects(:,currUnselectRects:PLAYER1MAXBID);
-lostRects = playerSelection - 1;
-unselectWinRects = lowRects(:,1:currPlayerSelection);
-rewardRects = lowRects(:,6:10);
 
 % display('test')
 
@@ -334,19 +318,8 @@ Screen('FillRect', win, uppColors, weakselRects); % Draw the upper rects to the 
 Screen('FrameRect', win, uppColors, weakunselRects);
 %     Screen('TextStyle', win, 1); % change style to bold
 DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
-Screen('FrameRect', win, botColors, unselectWinRects); % Draw the lower lost rects to the screen
-Screen('FillRect', win, botColors, selectedWinRects); % Draw the lower retained rects to the screen
-
-% show filled rects if win / empty rects if lost
-if player1Choice(i) > player2Choice(i)
-    Screen('FillRect', win, botColors, rewardRects); % Draw the lower retained rects to the screen
-    Screen('FillRect', win, botColors, botRects); % Draw the bottom won rects to the screen
-else
-    Screen('FrameRect', win, botColors, rewardRects); % Draw the lower lost rects to the screen
-    Screen('FrameRect', win, botColors, botRects); % Draw the bottom lost rects to the screen
-end
-% Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen
-% Screen('FillRect', win, botColors, botRects); % Draw the bottom rects to the screen
+Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen
+Screen('FillRect', win, botColors, botRects); % Draw the bottom rects to the screen
 Screen('Flip', win); % Flip to the screen
 
 WaitSecs(4);
