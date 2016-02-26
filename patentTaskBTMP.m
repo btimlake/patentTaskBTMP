@@ -23,7 +23,7 @@ trialLength=nan(NUMROUNDS,1);           % Keeps track of length of each trial
 player2Strategy='random'; %COMMENT AFTER DEBUGGING
 fixationDelay = 4 + (8-4).*rand(NUMROUNDS,1); % Creates array of random fixation cross presentation time of 4-8 seconds
 feedbackDelay = 2 + (6-2).*rand(NUMROUNDS,1); % Creates array of random delay between choice and feedback of 2-6 seconds
-
+KbName('UnifyKeyNames');
 %RESTORE AFTER DEBUGGING
 % if (nargin<1)                           % If the function is called without update method
 %     player2Strategy='random';
@@ -51,8 +51,8 @@ end
 % win = 10 %COMMENT AFTER DEBUGGING
 
 % screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
-% [win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255], [0 0 640 480]); %white background
-[win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255]); %white background
+[win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255], [0 0 640 480]); %white background
+% [win, screenRect] = Screen('OpenWindow', 0, [255, 255 ,255]); %white background
 
 %set colors 
 topColors = [0, 0, 0]; % black
@@ -121,8 +121,7 @@ keyName=''; % empty initial value
 while(~strcmp(keyName,'space')) % continues until current keyName is space
 %     keyName('space', 'LeftArrow', 'RightArrow')
 
-[keyTime, keyCode]=KbWait([],2);
-keyName=KbName(keyCode);
+
 
 DrawFormattedText(win, instructText11, 'center', instruct1TextYpos); % Draw betting instructions
 DrawFormattedText(win, instructText12, 'center', instruct2TextYpos); % Draw betting instructions
@@ -131,6 +130,8 @@ DrawFormattedText(win, instructText15, 'center', instruct4TextYpos); % Draw bett
 DrawFormattedText(win, instructText16, 'center', instruct5TextYpos); % Draw betting instructions
 DrawFormattedText(win, instructText17, 'center', instructbotTextYpos); % Draw betting instructions
 Screen('Flip', win); % Flip to the screen
+[keyTime, keyCode]=KbWait([],2);
+keyName=KbName(keyCode);
 
 end
 
@@ -211,7 +212,7 @@ allCoords = [xCoords; yCoords];
 lineWidthPix = screenXpixels * 40 / 56;
 
 % Draw the fixation cross in white, set it to the center of our screen and set good quality antialiasing
-Screen('DrawLines', win, allCoords, lineWidthPix, uppColors, [xCenter yCenter], 2);
+% Screen('DrawLines', win, allCoords, lineWidthPix, uppColors, [xCenter yCenter], 2);
 
 % Flip to the screen
 Screen('Flip', win);
@@ -274,68 +275,26 @@ keyName=KbName(keyCode);
         end
         
         % update selection to last button press
-% SelectedRects = topRects(:,1:currPlayerSelection);
-% unselectedRects = topRects(:,currUnselectRects:PLAYER1MAXBID);
-currUnselectRects = currPlayerSelection;
 
-if currPlayerSelection == 0
-%     currPlayerSelection = 0;
-%     SelectedRects = topRects(0,:);
-    unselectedRects = topRects(:,1:PLAYER1MAXBID);
 DrawFormattedText(win, topInstructText, textXpos, topTextYpos);
 % Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
-Screen('FrameRect', win, topColors, unselectedRects);
+Screen('FrameRect', win, topColors, topRects);
 DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
 DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
 Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
 Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
-Screen('Flip', win); % Flip to the screen
 
-% elseif currUnselectRects > PLAYER1MAXBID
-% SelectedRects = topRects(:,1:currPlayerSelection);
-% currUnselectRects = PLAYER1MAXBID;
-% % unselectedRects = topRects(:,currUnselectRects:PLAYER1MAXBID);
-% %     SelectedRects = topRects(:,:);
-% %     unselectedRects = topRects(0,:);
-% DrawFormattedText(win, topInstructText, textXpos, topTextYpos);
-% Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
-% % Screen('FrameRect', win, topColors, unselectedRects);
-% DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
-% Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-% DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
-% Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
-% Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
-% Screen('Flip', win); % Flip to the screen
- 
+
+if currPlayerSelection ~= 0
+    selectedRects = topRects(:,1:currPlayerSelection);    
+    Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
 else
-selectedRects = topRects(:,1:currPlayerSelection);
-currUnselectRects = currPlayerSelection + 1;
-unselectedRects = topRects(:,currUnselectRects:PLAYER1MAXBID);
-
-DrawFormattedText(win, topInstructText, textXpos, topTextYpos);
-Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
-Screen('FrameRect', win, topColors, unselectedRects);
-DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
-Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
-Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
-Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
-Screen('Flip', win); % Flip to the screen
-
+    selectedRects=0;
 end
+
+Screen('Flip', win); % Flip to the screen
             
-% Redraw current selection
-% DrawFormattedText(win, topInstructText, topRectXpos(1), topTextYpos);
-% Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
-% Screen('FrameRect', win, topColors, unselectedRects);
-% DrawFormattedText(win, uppInstructText, uppRectXpos(1), uppTextYpos); % Draw opponent explanation
-% Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-% DrawFormattedText(win, botInstructText, botRectXpos(1), lowTextYpos); % Draw reward explanation
-% Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen
-% Screen('Flip', win); % Flip to the screen
-% 
-        
 end
 
 trialEndTime(i) = GetSecs;
@@ -389,8 +348,10 @@ lowWinText = ['Your opponent earned ' num2str(player2Earnings(i)) ' in this roun
 
 % Draw choice explanation
 DrawFormattedText(win, topSelectText, textXpos, topTextYpos);
-Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
-Screen('FrameRect', win, topColors, unselectedRects);
+if currPlayerSelection ~= 0
+    Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
+end
+Screen('FrameRect', win, topColors, topRects);
 DrawFormattedText(win, uppSelectText, textXpos, uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
 DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
@@ -414,35 +375,51 @@ Screen('Flip', win); % Flip to the screen
 WaitSecs(feedbackDelay(i));
 
 %% Screen 3: Result
-weakSelection = num2str(player2Choice(i)-1);
-weakselRects = uppRects(:,1:str2num(weakSelection));
-weakunSelected = (str2num(weakSelection) + 1);
-weakunselRects = uppRects(:,weakunSelected:4);
-selectedWinRects = lowRects(:,currUnselectRects:PLAYER1MAXBID);
-lostRects = playerSelection - 1;
-unselectWinRects = lowRects(:,1:currPlayerSelection);
-rewardRects = lowRects(:,6:10);
+weakSelection = player2Choice(i)-1;
+if weakSelection ~= 0
+    weakselRects = uppRects(:,1:weakSelection);
+else
+    weakselRects=0;
+end
+% weakunSelected = (str2num(weakSelection) + 1);
+% weakunselRects = uppRects(:,weakunSelected:4);
+if player1Choice(i) < PLAYER1MAXBID
+    selectedWinRects = lowRects(:,player1Choice(i)+1:PLAYER1MAXBID);
+else
+    selectedWinRects=0;
+end
+% lostRects = playerSelection - 1;
+% unselectWinRects = lowRects(:,1:currPlayerSelection);
+% rewardRects = lowRects(:,6:10);
 
 % display('test')
+Screen('FrameRect', win, topColors, topRects);
+Screen('FrameRect', win, uppColors, uppRects);
+Screen('FrameRect', win, botColors, lowRects); 
+Screen('FrameRect', win, botColors, botRects); 
 
-DrawFormattedText(win, topSelectText, textXpos, topTextYpos); % Draw strong outcome
-Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
-Screen('FrameRect', win, topColors, unselectedRects);
-DrawFormattedText(win, uppWinText, textXpos, uppTextYpos); % Draw weak outcome
-Screen('FillRect', win, uppColors, weakselRects); % Draw the upper rects to the screen
-Screen('FrameRect', win, uppColors, weakunselRects);
 %     Screen('TextStyle', win, 1); % change style to bold
+DrawFormattedText(win, topSelectText, textXpos, topTextYpos); % Draw strong outcome
+DrawFormattedText(win, uppWinText, textXpos, uppTextYpos); % Draw weak outcome
 DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
-Screen('FrameRect', win, botColors, unselectWinRects); % Draw the lower lost rects to the screen
-Screen('FillRect', win, botColors, selectedWinRects); % Draw the lower retained rects to the screen
+
+if selectedRects
+    Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
+end
+if weakselRects
+    Screen('FillRect', win, uppColors, weakselRects); % Draw the upper rects to the screen
+end
+if selectedWinRects
+    Screen('FillRect', win, botColors, selectedWinRects); % Draw the lower retained rects to the screen
+end
 
 % show filled rects if win / empty rects if lost
 if player1Choice(i) > player2Choice(i)
-    Screen('FillRect', win, botColors, rewardRects); % Draw the lower retained rects to the screen
+%     Screen('FillRect', win, botColors, rewardRects); % Draw the lower retained rects to the screen
     Screen('FillRect', win, botColors, botRects); % Draw the bottom won rects to the screen
-else
-    Screen('FrameRect', win, botColors, rewardRects); % Draw the lower lost rects to the screen
-    Screen('FrameRect', win, botColors, botRects); % Draw the bottom lost rects to the screen
+% else
+%     Screen('FrameRect', win, botColors, rewardRects); % Draw the lower lost rects to the screen
+%     Screen('FrameRect', win, botColors, botRects); % Draw the bottom lost rects to the screen
 end
 % Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen
 % Screen('FillRect', win, botColors, botRects); % Draw the bottom rects to the screen
