@@ -244,13 +244,12 @@ Screen('FrameRect', win, topColors, topRects); % Draw the top rects to the scree
 DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
 
-% SANDBOXING THIS LINE DISPLAY
-textXpos = 50; %increase does nothing
-sepLineYpos = 100; % increase shifts back left
+textXpos = 100; 
+sepLineYpos = 50; 
 lineEndXpos = 150; %increase makes it gow longer down scren
-sepLineYpos = 100; %increase shifts it to the right
-lineWidthPix = 25;
-Screen('DrawLine', win, textXpos, textXpos, sepLineYpos, lineEndXpos, sepLineYpos, lineWidthPix); % Make this a line separating the sections
+sepLineYpos = 150; %increase shifts it to the right
+lineWidthPix = 5;
+Screen('DrawLine', win, textXpos, sepLineYpos, lineEndXpos, sepLineYpos, lineWidthPix); % Make this a line separating the sections
 Screen('Flip', win); % Flip to the screen
 
 DrawFormattedText(win, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
