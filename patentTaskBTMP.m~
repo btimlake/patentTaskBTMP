@@ -28,7 +28,7 @@ KbName('UnifyKeyNames');
 % if (nargin<1)                           % If the function is called without update method
 %     player2Strategy='random';
 % end
-Screen('Preference', 'SkipSyncTests', 1); %COMMENT AFTER DEBUGGING
+Screen('Preference', 'SkipSyncTests', 1); %COMMENT AFTER DEBUGGING (or change 1 to 0)
 
 %% Screen -1: Participant number entry
 
@@ -47,7 +47,7 @@ switch isempty(answer)
         particNum=(answer{1});
 end
 
-HideCursor;
+% HideCursor;
 
 %% Screen 0: Instructions
 % win = 10 %COMMENT AFTER DEBUGGING
@@ -62,13 +62,13 @@ uppColors = [0, 0, 0]; % black
 botColors = [0, 0, 0]; % black
 winColors = [64, 64, 64]; %gray8
 instructCola = [0, 104, 139]; %DeepSkyBlue4
-instructColb = [139, 69, 0]; %DarkOrange4
+instructColb = [205,149,12]; %DarkGoldenRod3
 
 % Get the size of the on-screen window
 [screenXpixels, screenYpixels] = Screen('WindowSize', win);
-% Get the center coordinate of the window
+% Get the center coordinates of the window
 [xCenter, yCenter] = RectCenter(screenRect);
-
+screenCenter = [xCenter, yCenter]; % center coordinates
 
 %Rectangle positions
 topRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45];
@@ -81,7 +81,7 @@ botRectXpos = [screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 sc
 numbotRect = length(botRectXpos); % Screen X positions of bottom five rectangles
 topRectYpos = screenYpixels * 7/40; % Screen Y positions of top five rectangles (4/40)
 uppRectYpos = screenYpixels * 16/40; % Screen Y positions of upper four rectangles (13/40)
-sepLineYpos = screenYpixels * 19/40; % Screen Y position of separator line
+sepLineYpos = screenYpixels * 10/40; % Screen Y position of separator line
 lowRectYpos = screenYpixels * 27/40; % Screen Y positions of lower ten rectangles (24/40)
 botRectYpos = screenYpixels * 34/40; % Screen Y positions of bottom five rectangles (31/40)
 
@@ -114,7 +114,7 @@ fontSize = round(screenYpixels * 2/40);
     Screen('TextColor', win, [0, 0, 0]);
     
 % Set standard line weight    
-lineWidthPix = round(screenXpixels * 4 / 560);
+lineWidthPix = round(screenXpixels * 2 / 560);
    
 instructText11 = ['You are competing against an opponent'];
 instructText12 = ['to win a prize in each trial.'];
@@ -131,7 +131,7 @@ instructText21 = ['Use the left/right arrow keys to select how many to invest.']
 instructText22 = ['Use the left/right arrow keys to select how many to invest.'];
 instructText23 = ['Hit the SPACE bar to confirm your choice.'];
 
-keyName=''; % empty initial value
+keyName='a'; % initial value
 
 
 while(~strcmp(keyName,'space')) % continues until current keyName is space
@@ -155,7 +155,7 @@ while(~strcmp(keyName,'space')) % continues until current keyName is space
 end
 
 keyname=''; %resets value to cue next screen
-    Screen('Flip', win); % Flip to the screen
+%     Screen('Flip', win); % Flip to the screen
 WaitSecs(.25);
 
 while(~strcmp(keyName,'space')) % continues until current keyName is space
@@ -216,23 +216,19 @@ botInstructText = 'the amount you don''t invest';
 for i=1:NUMROUNDS
 
 %% Screen 1a: Fixation cross
-DrawFormattedText(win, '+','center','center'); %ITI Fixation
+% DrawFormattedText(win, '+','center','center'); % Fixation cross as
+% typeset character; commented out now that draw cross works
 
-% fixCrossDimPix = screenXpixels * 4 / 56; % Arm size
-% 
-% % Now we set the coordinates (these are all relative to zero we will let
-% % the drawing routine center the cross in the center of our monitor for us)
-% xCoords = [-fixCrossDimPix fixCrossDimPix 0 0];
-% yCoords = [0 0 -fixCrossDimPix fixCrossDimPix];
-% allCoords = [xCoords; yCoords];
-% 
-% % Set the line width for our fixation cross
+% Now we set the coordinates (these are all relative to zero we will let
+% the drawing routine center the cross in the center of our monitor for us)
+fixCrossDimPix = round(screenXpixels * 1 / 56); % Arm size
+xCoords = [-fixCrossDimPix fixCrossDimPix 0 0]; % horizontal line
+yCoords = [0 0 -fixCrossDimPix fixCrossDimPix]; % vertical line
+allCoords = [xCoords; yCoords]; % both lines together
 
 % Draw the fixation cross in black, set it to the center of our screen and set good quality antialiasing
-% Screen('DrawLines', win, allCoords, lineWidthPix, uppColors, [xCenter yCenter], 2);
-
-% Flip to the screen
-Screen('Flip', win);
+Screen('DrawLines', win, allCoords, lineWidthPix, topColors, screenCenter);
+Screen('Flip', win); % Flip to the screen
 
 % Wait for 4-8 seconds
 WaitSecs(fixationDelay(i));
@@ -244,13 +240,23 @@ Screen('FrameRect', win, topColors, topRects); % Draw the top rects to the scree
 DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
 
-textXpos = 100; 
-sepLineYpos = 50; 
-lineEndXpos = 150; %increase makes it gow longer down scren
-sepLineYpos = 150; %increase shifts it to the right
-lineWidthPix = 5;
-Screen('DrawLine', win, textXpos, sepLineYpos, lineEndXpos, sepLineYpos, lineWidthPix); % Make this a line separating the sections
-Screen('Flip', win); % Flip to the screen
+% % SANDBOXING THIS LINE DISPLAY
+% [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
+% topColors = [0, 0, 0]; % black
+% winColors = [64, 64, 64]; %gray8
+% instructCola = [0, 104, 139]; %DeepSkyBlue4
+% instructColb = [205,149,12]; %DarkGoldenRod3
+% [screenXpixels, screenYpixels] = Screen('WindowSize', win);
+% [xCenter, yCenter] = RectCenter(screenRect);
+% 
+% textXpos = 50; %increase does nothing
+% sepLineYpos1 = 50; % increase shifts back left
+% lineEndXpos = 300; %increase makes it gow longer down scren
+% sepLineYpos2 = 50; % now moves it up and down relative to 25
+% lineWidthPix = 25;
+Screen('DrawLine', win, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
+% Scrn('DrawLine', win, [weight    ], lineEndXpo?, [verticlend], textXpo?, [vertclstrt]; % Make this a line separating the sections
+% Screen('Flip', win); % Flip to the screen
 
 DrawFormattedText(win, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
 DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
@@ -286,7 +292,7 @@ DrawFormattedText(win, topInstructText, textXpos, topTextYpos);
 Screen('FrameRect', win, topColors, topRects);
 DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-Screen('DrawLine', win, topColors, textXpos, sepLineYpos, lineEndXpos, sepLineYpos, lineWidthPix); % Make this a line separating the sections
+Screen('DrawLine', win, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
 DrawFormattedText(win, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
 DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
 Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
