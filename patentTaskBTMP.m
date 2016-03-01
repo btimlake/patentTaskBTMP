@@ -7,8 +7,9 @@
 
 function [player1Earnings] = patentTaskBTMP(player2Strategy)
 
+DateTime=datestr(now,'ddmm-HHMM');      % Get date and time for log file
 PRIZE=10;                               % Winnings aside from bidding endowment, currently a fixed value
-NUMROUNDS=5;                           % Number of rounds played against this opponent
+NUMROUNDS=20;                           % Number of rounds played against this opponent
 PLAYER1MAXBID=5;                        % Endowment for player1
 PLAYER2MAXBID=4;                        % Endowment for player2
 TAU=2;                                  % Softmax temperature
@@ -81,7 +82,7 @@ botRectXpos = [screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 sc
 numbotRect = length(botRectXpos); % Screen X positions of bottom five rectangles
 topRectYpos = screenYpixels * 7/40; % Screen Y positions of top five rectangles (4/40)
 uppRectYpos = screenYpixels * 16/40; % Screen Y positions of upper four rectangles (13/40)
-sepLineYpos = screenYpixels * 19/40; % Screen Y position of separator line
+sepLineYpos = screenYpixels * 39/80; % Screen Y position of separator line
 lowRectYpos = screenYpixels * 27/40; % Screen Y positions of lower ten rectangles (24/40)
 botRectYpos = screenYpixels * 34/40; % Screen Y positions of bottom five rectangles (31/40)
 
@@ -466,8 +467,8 @@ for i=1:NUMROUNDS
         trialLength(i) = trialEndTime(i)-trialStartTime(i);
 end
 
-% save(['/Users/bentimberlake/Documents/MATLAB/patentTaskBTMP/logfiles/patent race ' particNum], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
-save(['patent race ' particNum], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
+% save(['/Users/bentimberlake/Documents/MATLAB/patentTaskBTMP/logfiles/patent_race-subj_' num2str(particNum) '-' DateTime], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
+save(['patent_race-subj_' num2str(particNum) '-' DateTime], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
 
 end
 
