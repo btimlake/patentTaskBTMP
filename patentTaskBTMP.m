@@ -47,7 +47,7 @@ switch isempty(answer)
         particNum=(answer{1});
 end
 
-% HideCursor;
+HideCursor;
 
 %% Screen 0: Instructions
 % win = 10 %COMMENT AFTER DEBUGGING
@@ -81,7 +81,7 @@ botRectXpos = [screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 sc
 numbotRect = length(botRectXpos); % Screen X positions of bottom five rectangles
 topRectYpos = screenYpixels * 7/40; % Screen Y positions of top five rectangles (4/40)
 uppRectYpos = screenYpixels * 16/40; % Screen Y positions of upper four rectangles (13/40)
-sepLineYpos = screenYpixels * 10/40; % Screen Y position of separator line
+sepLineYpos = screenYpixels * 19/40; % Screen Y position of separator line
 lowRectYpos = screenYpixels * 27/40; % Screen Y positions of lower ten rectangles (24/40)
 botRectYpos = screenYpixels * 34/40; % Screen Y positions of bottom five rectangles (31/40)
 
@@ -154,8 +154,8 @@ while(~strcmp(keyName,'space')) % continues until current keyName is space
 
 end
 
-keyname=''; %resets value to cue next screen
-%     Screen('Flip', win); % Flip to the screen
+keyName=''; %resets value to cue next screen
+%      Screen('Flip', win); % Flip to the screen
 WaitSecs(.25);
 
 while(~strcmp(keyName,'space')) % continues until current keyName is space
@@ -346,6 +346,7 @@ end
 Screen('FrameRect', win, topColors, topRects);
 DrawFormattedText(win, uppSelectText, textXpos, uppTextYpos); % Draw opponent explanation
 Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
+Screen('DrawLine', win, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
 DrawFormattedText(win, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
 DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
 Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
@@ -392,6 +393,7 @@ Screen('FrameRect', win, botColors, lowRects);
 Screen('FrameRect', win, botColors, botRects); 
 
 %     Screen('TextStyle', win, 1); % change style to bold
+Screen('DrawLine', win, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
 DrawFormattedText(win, topSelectText, textXpos, topTextYpos); % Draw strong outcome
 DrawFormattedText(win, uppWinText, textXpos, uppTextYpos); % Draw weak outcome
 % DrawFormattedText(win, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
@@ -426,15 +428,6 @@ end
 
 %% Screen 4: Earnings
 
-% SANDBOX
-% Screen('Preference', 'SkipSyncTests', 1); %COMMENT AFTER DEBUGGING (or change 1 to 0)
-% % [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
-% [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255]); %white background
-% % DUMMY AMOUNTS
-% player1Earnings=[2 1 12 11 12]
-% player2Earnings=[11 1 3 4 5]
-% /SANDBOX
-
 % calculate total earnings this round for each player 
 p1GameEarnings=sum(player1Earnings); 
 p2GameEarnings=sum(player2Earnings);
@@ -443,17 +436,12 @@ p2GameEarnings=sum(player2Earnings);
 earningsText11 = ['Your earnings this game: ' num2str(p1GameEarnings)];
 earningsText12 = ['Opponent''s earnings this game: ' num2str(p2GameEarnings)];
 
-while(~strcmp(keyName,'space')) % continues until current keyName is space
-    
     DrawFormattedText(win, earningsText11, 'center', instruct1TextYpos); % Draw player earnings text
     DrawFormattedText(win, earningsText12, 'center', instruct3TextYpos); % Draw opponent earnings text
-    DrawFormattedText(win, instructText0, 'center', instructbotTextYpos); % Draw space bar instructions
+%     DrawFormattedText(win, instructText0, 'center', instructbotTextYpos); % Draw space bar instructions
     Screen('Flip', win); % Flip to the screen
 
-    [keyTime, keyCode]=KbWait([],2);
-    keyName=KbName(keyCode);
-
-end
+WaitSecs(4);
 
 function [player2Options] = player2Update(player2Options, player2Strategy, player2Choice, player2Earnings, player1Choice, PRIZE, PLAYER2MAXBID)
     alpha=0.5;  % learning rate for how quickly player2 adapts
