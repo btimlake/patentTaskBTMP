@@ -470,7 +470,7 @@ function [player2Options] = player2Update(player2Options, player2Strategy, playe
 end
 
 
-sca
+sca 
 
 
 %% End-of-block calculations and create log file
