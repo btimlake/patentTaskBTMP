@@ -427,17 +427,19 @@ end
 %% Screen 4: Earnings
 
 % SANDBOX
-Screen('Preference', 'SkipSyncTests', 1); %COMMENT AFTER DEBUGGING (or change 1 to 0)
-% [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
-[win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255]); %white background
-% DUMMY AMOUNTS
-player1Earnings=[2 1 12 11 12]
-player2Earnings=[11 1 3 4 5]
+% Screen('Preference', 'SkipSyncTests', 1); %COMMENT AFTER DEBUGGING (or change 1 to 0)
+% % [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
+% [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255]); %white background
+% % DUMMY AMOUNTS
+% player1Earnings=[2 1 12 11 12]
+% player2Earnings=[11 1 3 4 5]
 % /SANDBOX
 
-p1GameEarnings=sum(player1Earnings); % calculate total earnings this round for each player
+% calculate total earnings this round for each player 
+p1GameEarnings=sum(player1Earnings); 
 p2GameEarnings=sum(player2Earnings);
 
+% Earnings text
 earningsText11 = ['Your earnings this game: ' num2str(p1GameEarnings)];
 earningsText12 = ['Opponent''s earnings this game: ' num2str(p2GameEarnings)];
 
@@ -476,7 +478,7 @@ for i=1:NUMROUNDS
         trialLength(i) = trialEndTime(i)-trialStartTime(i);
 end
 
-
+% save(['/Users/bentimberlake/Documents/MATLAB/patentTaskBTMP/logfiles/patent race ' particNum], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
 save(['patent race ' particNum], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
 
 end
