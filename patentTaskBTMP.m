@@ -5,11 +5,14 @@
 % Tobias Larsen, November 2015
 % modified and amended Ben Timberlake, Feburary 2016
 
+
 function [player1Earnings] = patentTaskBTMP(player2Strategy)
 
-DateTime=datestr(now,'ddmm-HHMM');      % Get date and time for log file
+clearvars -except particNum DateTime;  
+
+% DateTime=datestr(now,'ddmm-HHMM');      % Get date and time for log file
 PRIZE=10;                               % Winnings aside from bidding endowment, currently a fixed value
-NUMROUNDS=20;                           % Number of rounds played against this opponent
+NUMROUNDS=5;                           % Number of rounds played against this opponent
 PLAYER1MAXBID=5;                        % Endowment for player1
 PLAYER2MAXBID=4;                        % Endowment for player2
 TAU=2;                                  % Softmax temperature
@@ -35,18 +38,18 @@ Screen('Preference', 'SkipSyncTests', 1); %COMMENT AFTER DEBUGGING (or change 1 
 
 %%% Enter participant number (taken from:
 %%% http://www.academia.edu/2614964/Creating_experiments_using_Matlab_and_Psychtoolbox)
-fail1='Please enter a participant number.'; %error message
-prompt = {'Enter participant number:'};
-dlg_title ='New Participant';
-num_lines = 1;
-def = {'0'};
-answer = inputdlg(prompt,dlg_title,num_lines,def);%presents box to enterdata into
-switch isempty(answer)
-    case 1 %deals with both cancel and X presses 
-        error(fail1)
-    case 0
-        particNum=(answer{1});
-end
+% fail1='Please enter a participant number.'; %error message
+% prompt = {'Enter participant number:'};
+% dlg_title ='New Participant';
+% num_lines = 1;
+% def = {'0'};
+% answer = inputdlg(prompt,dlg_title,num_lines,def);%presents box to enterdata into
+% switch isempty(answer)
+%     case 1 %deals with both cancel and X presses 
+%         error(fail1)
+%     case 0
+%         particNum=(answer{1});
+% end
 
 HideCursor;
 
@@ -54,16 +57,19 @@ HideCursor;
 % win = 10 %COMMENT AFTER DEBUGGING
 
 % screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
-% [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
-[win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255]); %white background
+[win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
+% [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255]); %white background
 
 %set colors 
 topColors = [0, 0, 0]; % black
 uppColors = [0, 0, 0]; % black
 botColors = [0, 0, 0]; % black
-winColors = [64, 64, 64]; %gray8
-instructCola = [0, 104, 139]; %DeepSkyBlue4
-instructColb = [205,149,12]; %DarkGoldenRod3
+% winColors = [64, 64, 64]; %gray8
+winColors = [0.2510, 0.2510, 0.2510]; %gray8
+% instructCola = [0, 104, 139]; %DeepSkyBlue4
+instructCola = [0, 0.4078, 0.5451]; %DeepSkyBlue4
+% instructColb = [205,149,12]; %DarkGoldenRod3
+instructColb = [0.8039, 0.5843, 0.0471]; %DarkGoldenRod3
 
 % Get the size of the on-screen window
 [screenXpixels, screenYpixels] = Screen('WindowSize', win);
@@ -120,7 +126,7 @@ lineWidthPix = round(screenXpixels * 2 / 560);
 instructText11 = ['You are competing against an opponent'];
 instructText12 = ['to win a prize in each trial.'];
 instructText13 = ['You can invest 0-' num2str(PLAYER1MAXBID) ' cards.'];
-instructText14 = ['Your opponent can invest  0-  ' num2str(PLAYER2MAXBID) '.'];
+instructText14 = ['Your opponent can invest  0-' num2str(PLAYER2MAXBID) '.'];
 instructText15 = ['The player who invests more wins 10.'];
 instructText16 = ['If both invest the same amount,'];
 instructText17 = ['neither player wins.'];
@@ -128,9 +134,15 @@ instructText18 = ['Whatever you don''t invest, you keep.'];
 instructText19 = ['(For example, if you invest 3,'];
 instructText20 = ['you keep 2, whether you win or lose.)'];
 instructText0 = ['Hit the SPACE bar to continue.'];
-instructText21 = ['Use the left/right arrow keys'];
-instructText22 = ['to select how many to invest.'];
-instructText23 = ['Then hit the SPACE bar to confirm your choice.'];
+instructText21 = ['Your endowment is renewed each round.'];
+instructText22 = ['Your payment after the experiment will'];
+instructText23 = ['be based on two random trials.'];
+instructText24 = ['So every trial could matter.'];
+instructText25 = ['A fixation cross appears between rounds.'];
+% instructText22 = ['to select how many to invest.'];
+instructText27 = ['Use the left/right arrow keys'];
+instructText28 = ['to select how many cards to invest.'];
+instructText29 = ['Then hit the SPACE bar to confirm your choice.'];
 
 keyName=''; % empty initial value
 
@@ -161,10 +173,17 @@ WaitSecs(.25);
 
 while(~strcmp(keyName,'space')) % continues until current keyName is space
 
-    DrawFormattedText(win, instructText21, 'center', instruct1TextYpos); % Draw betting instructions
-    DrawFormattedText(win, instructText22, 'center', instruct2TextYpos); % Draw betting instructions
-    DrawFormattedText(win, instructText23, 'center', instruct4TextYpos); % Draw betting instructions
-    DrawFormattedText(win, instructText0, 'center', instructbotTextYpos); % Draw betting instructions
+    DrawFormattedText(win, instructText21, 'center', instruct1TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(win, instructText22, 'center', instruct2TextYpos, instructColb); % Draw betting instructions
+    DrawFormattedText(win, instructText23, 'center', instruct3TextYpos, instructColb); % Draw betting instructions
+    DrawFormattedText(win, instructText24, 'center', instruct4TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(win, instructText25, 'center', instruct5TextYpos, instructColb); % Draw betting instructions
+%     DrawFormattedText(win, instructText26, 'center', instruct6TextYpos, instructColb); % Draw betting instructions
+    DrawFormattedText(win, instructText27, 'center', instruct7TextYpos, topColors); % Draw betting instructions
+    DrawFormattedText(win, instructText28, 'center', instruct8TextYpos, topColors); % Draw betting instructions
+    DrawFormattedText(win, instructText29, 'center', instruct9TextYpos, topColors); % Draw betting instructions
+%     DrawFormattedText(win, instructText30, 'center', instruct10TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(win, instructText0, 'center', instructbotTextYpos, topColors); % Draw betting instructions
     Screen('Flip', win); % Flip to the screen
 
     [keyTime, keyCode]=KbWait([],2);
@@ -468,7 +487,7 @@ for i=1:NUMROUNDS
 end
 
 % save(['/Users/bentimberlake/Documents/MATLAB/patentTaskBTMP/logfiles/patent_race-subj_' num2str(particNum) '-' DateTime], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
-save(['patent_race-subj_' num2str(particNum) '-' DateTime], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
+save(['patent_race-subj_' 'particNum' '-' DateTime], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
 
 end
 
