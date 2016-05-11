@@ -25,14 +25,18 @@ player2Choice=nan(NUMROUNDS,1);         % Keeps track of player2 choices
 trialLength=nan(NUMROUNDS,1);           % Keeps track of length of each trial
 % player2Strategy='Fictive';
 player2Strategy='random'; %COMMENT AFTER DEBUGGING
-fixationDelay = 4 + (8-4).*rand(NUMROUNDS,1); % Creates array of random fixation cross presentation time of 4-8 seconds
-feedbackDelay = 2 + (6-2).*rand(NUMROUNDS,1); % Creates array of random delay between choice and feedback of 2-6 seconds
+% Shorter delays
+fixationDelay = 1 + (2-1).*rand(NUMROUNDS,1); % Creates array of random fixation cross presentation time of 1-2 seconds
+feedbackDelay = 1 + (3-1).*rand(NUMROUNDS,1); % Creates array of random delay between choice and feedback of 1-3 seconds
+% Longer delays
+% fixationDelay = 4 + (8-4).*rand(NUMROUNDS,1); % Creates array of random fixation cross presentation time of 4-8 seconds
+% feedbackDelay = 2 + (6-2).*rand(NUMROUNDS,1); % Creates array of random delay between choice and feedback of 2-6 seconds
 KbName('UnifyKeyNames');
 %RESTORE AFTER DEBUGGING
 % if (nargin<1)                           % If the function is called without update method
 %     player2Strategy='random';
 % end
-Screen('Preference', 'SkipSyncTests', 1); %COMMENT AFTER DEBUGGING (or change 1 to 0)
+% Screen('Preference', 'SkipSyncTests', 1); %COMMENT AFTER DEBUGGING (or change 1 to 0)
 
 %% Screen -1: Participant number entry
 
@@ -442,7 +446,7 @@ end
 DrawFormattedText(win, botWinText, textXpos, lowTextYpos); % Draw reward explanation
 Screen('Flip', win); % Flip to the screen
 
-WaitSecs(3);
+WaitSecs(5);
 
 end
 
@@ -487,7 +491,7 @@ for i=1:NUMROUNDS
 end
 
 % save(['/Users/bentimberlake/Documents/MATLAB/patentTaskBTMP/logfiles/patent_race-subj_' num2str(particNum) '-' DateTime], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
-save(['patent_race-subj_' 'particNum' '-' DateTime], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
+save(['patent_race-subj_' 'particNum' '-' 'DateTime'], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
 
 end
 
