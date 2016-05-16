@@ -6,9 +6,9 @@
 % modified and amended Ben Timberlake, Feburary 2016
 
 
-function [player1Earnings] = patentTaskBTMP(player2Strategy)
+function [player1Earnings] = patentTaskBTMP(particNum, DateTime, window, windowRect, player2Strategy)
 
-clearvars -except particNum DateTime;  
+% clearvars -except particNum DateTime window windowRect;  
 
 % DateTime=datestr(now,'ddmm-HHMM');      % Get date and time for log file
 PRIZE=10;                               % Winnings aside from bidding endowment, currently a fixed value
@@ -55,13 +55,13 @@ KbName('UnifyKeyNames');
 %         particNum=(answer{1});
 % end
 
-HideCursor;
+% HideCursor;
 
 %% Screen 0: Instructions
 % win = 10 %COMMENT AFTER DEBUGGING
 
 % screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
-[win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
+% [window, windowRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
 % [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255]); %white background
 
 %set colors 
@@ -76,9 +76,9 @@ instructCola = [0, 0.4078, 0.5451]; %DeepSkyBlue4
 instructColb = [0.8039, 0.5843, 0.0471]; %DarkGoldenRod3
 
 % Get the size of the on-screen window
-[screenXpixels, screenYpixels] = Screen('WindowSize', win);
+[screenXpixels, screenYpixels] = Screen('WindowSize', window);
 % Get the center coordinates of the window
-[xCenter, yCenter] = RectCenter(screenRect);
+[xCenter, yCenter] = RectCenter(windowRect);
 screenCenter = [xCenter, yCenter]; % center coordinates
 
 %Rectangle positions
@@ -119,10 +119,10 @@ instructbotTextYpos = screenYpixels * 35/40;
 
 % Select specific text font, style and size:
 fontSize = round(screenYpixels * 2/40);
-    Screen('TextFont', win, 'Courier New');
-    Screen('TextSize', win, fontSize);
-    Screen('TextStyle', win);
-    Screen('TextColor', win, [0, 0, 0]);
+    Screen('TextFont', window, 'Courier New');
+    Screen('TextSize', window, fontSize);
+    Screen('TextStyle', window);
+    Screen('TextColor', window, [0, 0, 0]);
     
 % Set standard line weight    
 lineWidthPix = round(screenXpixels * 2 / 560);
@@ -153,18 +153,18 @@ keyName=''; % empty initial value
 
 while(~strcmp(keyName,'space')) % continues until current keyName is space
     
-    DrawFormattedText(win, instructText11, 'center', instruct1TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(win, instructText12, 'center', instruct2TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(win, instructText13, 'center', instruct3TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(win, instructText14, 'center', instruct4TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(win, instructText15, 'center', instruct5TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(win, instructText16, 'center', instruct6TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(win, instructText17, 'center', instruct7TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(win, instructText18, 'center', instruct8TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(win, instructText19, 'center', instruct9TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(win, instructText20, 'center', instruct10TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(win, instructText0, 'center', instructbotTextYpos, topColors); % Draw betting instructions
-    Screen('Flip', win); % Flip to the screen
+    DrawFormattedText(window, instructText11, 'center', instruct1TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(window, instructText12, 'center', instruct2TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(window, instructText13, 'center', instruct3TextYpos, instructColb); % Draw betting instructions
+    DrawFormattedText(window, instructText14, 'center', instruct4TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(window, instructText15, 'center', instruct5TextYpos, instructColb); % Draw betting instructions
+    DrawFormattedText(window, instructText16, 'center', instruct6TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(window, instructText17, 'center', instruct7TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(window, instructText18, 'center', instruct8TextYpos, instructColb); % Draw betting instructions
+    DrawFormattedText(window, instructText19, 'center', instruct9TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(window, instructText20, 'center', instruct10TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(window, instructText0, 'center', instructbotTextYpos, topColors); % Draw betting instructions
+    Screen('Flip', window); % Flip to the screen
 
     [keyTime, keyCode]=KbWait([],2);
     keyName=KbName(keyCode);
@@ -177,18 +177,18 @@ WaitSecs(.25);
 
 while(~strcmp(keyName,'space')) % continues until current keyName is space
 
-    DrawFormattedText(win, instructText21, 'center', instruct1TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(win, instructText22, 'center', instruct2TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(win, instructText23, 'center', instruct3TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(win, instructText24, 'center', instruct4TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(win, instructText25, 'center', instruct5TextYpos, instructColb); % Draw betting instructions
+    DrawFormattedText(window, instructText21, 'center', instruct1TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(window, instructText22, 'center', instruct2TextYpos, instructColb); % Draw betting instructions
+    DrawFormattedText(window, instructText23, 'center', instruct3TextYpos, instructColb); % Draw betting instructions
+    DrawFormattedText(window, instructText24, 'center', instruct4TextYpos, instructCola); % Draw betting instructions
+    DrawFormattedText(window, instructText25, 'center', instruct5TextYpos, instructColb); % Draw betting instructions
 %     DrawFormattedText(win, instructText26, 'center', instruct6TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(win, instructText27, 'center', instruct7TextYpos, topColors); % Draw betting instructions
-    DrawFormattedText(win, instructText28, 'center', instruct8TextYpos, topColors); % Draw betting instructions
-    DrawFormattedText(win, instructText29, 'center', instruct9TextYpos, topColors); % Draw betting instructions
+    DrawFormattedText(window, instructText27, 'center', instruct7TextYpos, topColors); % Draw betting instructions
+    DrawFormattedText(window, instructText28, 'center', instruct8TextYpos, topColors); % Draw betting instructions
+    DrawFormattedText(window, instructText29, 'center', instruct9TextYpos, topColors); % Draw betting instructions
 %     DrawFormattedText(win, instructText30, 'center', instruct10TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(win, instructText0, 'center', instructbotTextYpos, topColors); % Draw betting instructions
-    Screen('Flip', win); % Flip to the screen
+    DrawFormattedText(window, instructText0, 'center', instructbotTextYpos, topColors); % Draw betting instructions
+    Screen('Flip', window); % Flip to the screen
 
     [keyTime, keyCode]=KbWait([],2);
     keyName=KbName(keyCode);
@@ -251,18 +251,18 @@ yCoords = [0 0 -fixCrossDimPix fixCrossDimPix]; % vertical line
 allCoords = [xCoords; yCoords]; % both lines together
 
 % Draw the fixation cross in black, set it to the center of our screen and set good quality antialiasing
-Screen('DrawLines', win, allCoords, lineWidthPix, topColors, screenCenter);
-Screen('Flip', win); % Flip to the screen
+Screen('DrawLines', window, allCoords, lineWidthPix, topColors, screenCenter);
+Screen('Flip', window); % Flip to the screen
 
 % Wait for 4-8 seconds
 WaitSecs(fixationDelay(i));
 
 
 %% Screen 1b: Presentation screen
-DrawFormattedText(win, topInstructText, textXpos, topTextYpos); % Draw betting instructions
-Screen('FrameRect', win, topColors, topRects); % Draw the top rects to the screen
-DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
-Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
+DrawFormattedText(window, topInstructText, textXpos, topTextYpos); % Draw betting instructions
+Screen('FrameRect', window, topColors, topRects); % Draw the top rects to the screen
+DrawFormattedText(window, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
+Screen('FrameRect', window, uppColors, uppRects); % Draw the upper rects to the screen
 
 % % SANDBOXING THIS LINE DISPLAY
 % [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
@@ -278,15 +278,15 @@ Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the scr
 % lineEndXpos = 300; %increase makes it gow longer down scren
 % sepLineYpos2 = 50; % now moves it up and down relative to 25
 % lineWidthPix = 25;
-Screen('DrawLine', win, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
+Screen('DrawLine', window, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
 % Scrn('DrawLine', win, [weight    ], lineEndXpo?, [verticlend], textXpo?, [vertclstrt]; % Make this a line separating the sections
 % Screen('Flip', win); % Flip to the screen
 
-DrawFormattedText(win, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
-DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
-Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
-Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
-Screen('Flip', win); % Flip to the screen
+DrawFormattedText(window, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
+DrawFormattedText(window, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
+Screen('FrameRect', window, botColors, lowRects); % Draw the lower rects to the screen 
+Screen('FrameRect', window, botColors, botRects); % Draw the bottom rects to the screen 
+Screen('Flip', window); % Flip to the screen
         trialStartTime(i) = GetSecs;
 
 currPlayerSelection=0;     % Set starting choice
@@ -311,26 +311,26 @@ keyName=KbName(keyCode);
         end
         % update selection to last button press
 
-DrawFormattedText(win, topInstructText, textXpos, topTextYpos);
+DrawFormattedText(window, topInstructText, textXpos, topTextYpos);
 % Screen('FillRect', win, topColors, SelectedRects); % Draw the top rects to the screen
-Screen('FrameRect', win, topColors, topRects);
-DrawFormattedText(win, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
-Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-Screen('DrawLine', win, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
-DrawFormattedText(win, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
-DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
-Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
-Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
+Screen('FrameRect', window, topColors, topRects);
+DrawFormattedText(window, uppInstructText, textXpos, uppTextYpos); % Draw opponent explanation
+Screen('FrameRect', window, uppColors, uppRects); % Draw the upper rects to the screen
+Screen('DrawLine', window, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
+DrawFormattedText(window, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
+DrawFormattedText(window, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
+Screen('FrameRect', window, botColors, lowRects); % Draw the lower rects to the screen 
+Screen('FrameRect', window, botColors, botRects); % Draw the bottom rects to the screen 
 
 
 if currPlayerSelection ~= 0
     selectedRects = topRects(:,1:currPlayerSelection);    
-    Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
+    Screen('FillRect', window, topColors, selectedRects); % Draw the top rects to the screen
 else
     selectedRects=0;
 end
 
-Screen('Flip', win); % Flip to the screen
+Screen('Flip', window); % Flip to the screen
             
 end
 
@@ -363,18 +363,18 @@ botWinText = ['You earned ' num2str(player1Earnings(i)) ' in this round.'];
 lowWinText = ['Your opponent earned ' num2str(player2Earnings(i)) ' in this round.']; 
 
 % Draw choice explanation
-DrawFormattedText(win, topSelectText, textXpos, topTextYpos);
+DrawFormattedText(window, topSelectText, textXpos, topTextYpos);
 if currPlayerSelection ~= 0
-    Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
+    Screen('FillRect', window, topColors, selectedRects); % Draw the top rects to the screen
 end
-Screen('FrameRect', win, topColors, topRects);
-DrawFormattedText(win, uppSelectText, textXpos, uppTextYpos); % Draw opponent explanation
-Screen('FrameRect', win, uppColors, uppRects); % Draw the upper rects to the screen
-Screen('DrawLine', win, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
-DrawFormattedText(win, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
-DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
-Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen 
-Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the screen 
+Screen('FrameRect', window, topColors, topRects);
+DrawFormattedText(window, uppSelectText, textXpos, uppTextYpos); % Draw opponent explanation
+Screen('FrameRect', window, uppColors, uppRects); % Draw the upper rects to the screen
+Screen('DrawLine', window, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
+DrawFormattedText(window, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
+DrawFormattedText(window, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
+Screen('FrameRect', window, botColors, lowRects); % Draw the lower rects to the screen 
+Screen('FrameRect', window, botColors, botRects); % Draw the bottom rects to the screen 
 % Screen('FrameRect', win, botColors, unselectWinRects); % Draw the lower lost rects to the screen
 % Screen('FillRect', win, botColors, selectedWinRects); % Draw the lower retained rects to the screen
 % Screen('FrameillRect', win, topColors, selectedRects); % Draw the lower lost rects to the screen
@@ -388,7 +388,7 @@ Screen('FrameRect', win, botColors, botRects); % Draw the bottom rects to the sc
 %     Screen('FrameRect', win, botColors, rewardRects); % Draw the lower lost rects to the screen
 %     Screen('FrameRect', win, botColors, botRects); % Draw the bottom lost rects to the screen
 % end
-Screen('Flip', win); % Flip to the screen
+Screen('Flip', window); % Flip to the screen
 
 WaitSecs(feedbackDelay(i));
 
@@ -411,40 +411,40 @@ end
 rewardRects = lowRects(:,6:10);
 
 % display('test')
-Screen('FrameRect', win, topColors, topRects);
-Screen('FrameRect', win, uppColors, uppRects);
-Screen('FrameRect', win, botColors, lowRects); 
-Screen('FrameRect', win, botColors, botRects); 
+Screen('FrameRect', window, topColors, topRects);
+Screen('FrameRect', window, uppColors, uppRects);
+Screen('FrameRect', window, botColors, lowRects); 
+Screen('FrameRect', window, botColors, botRects); 
 
 %     Screen('TextStyle', win, 1); % change style to bold
-Screen('DrawLine', win, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
-DrawFormattedText(win, topSelectText, textXpos, topTextYpos); % Draw strong outcome
-DrawFormattedText(win, uppWinText, textXpos, uppTextYpos); % Draw weak outcome
+Screen('DrawLine', window, lineWidthPix, lineEndXpos, sepLineYpos, textXpos, sepLineYpos); % Make this a line separating the sections
+DrawFormattedText(window, topSelectText, textXpos, topTextYpos); % Draw strong outcome
+DrawFormattedText(window, uppWinText, textXpos, uppTextYpos); % Draw weak outcome
 % DrawFormattedText(win, lowInstructText, textXpos, low1TextYpos); % Draw reward explanation
 % DrawFormattedText(win, botInstructText, textXpos, lowTextYpos); % Draw reward explanation
 
 if selectedRects
-    Screen('FillRect', win, topColors, selectedRects); % Draw the top rects to the screen
+    Screen('FillRect', window, topColors, selectedRects); % Draw the top rects to the screen
 end
 if weakselRects
-    Screen('FillRect', win, uppColors, weakselRects); % Draw the upper rects to the screen
+    Screen('FillRect', window, uppColors, weakselRects); % Draw the upper rects to the screen
 end
 if selectedWinRects
-    Screen('FillRect', win, botColors, selectedWinRects); % Draw the lower retained rects to the screen
+    Screen('FillRect', window, botColors, selectedWinRects); % Draw the lower retained rects to the screen
 end
 
 % show filled rects if win / empty rects if lost
 if player1Choice(i) > weakSelection
-    Screen('FillRect', win, winColors, rewardRects); % Draw the lower retained rects to the screen
-    Screen('FillRect', win, winColors, botRects); % Draw the bottom won rects to the screen
+    Screen('FillRect', window, winColors, rewardRects); % Draw the lower retained rects to the screen
+    Screen('FillRect', window, winColors, botRects); % Draw the bottom won rects to the screen
 % else
 %     Screen('FrameRect', win, botColors, rewardRects); % Draw the lower lost rects to the screen
 %     Screen('FrameRect', win, botColors, botRects); % Draw the bottom lost rects to the screen
 end
 % Screen('FrameRect', win, botColors, lowRects); % Draw the lower rects to the screen
 % Screen('FillRect', win, botColors, botRects); % Draw the bottom rects to the screen
-DrawFormattedText(win, botWinText, textXpos, lowTextYpos); % Draw reward explanation
-Screen('Flip', win); % Flip to the screen
+DrawFormattedText(window, botWinText, textXpos, lowTextYpos); % Draw reward explanation
+Screen('Flip', window); % Flip to the screen
 
 WaitSecs(5);
 
@@ -460,10 +460,10 @@ p2GameEarnings=sum(player2Earnings);
 earningsText11 = ['Your earnings this game: ' num2str(p1GameEarnings)];
 earningsText12 = ['Opponent''s earnings this game: ' num2str(p2GameEarnings)];
 
-    DrawFormattedText(win, earningsText11, 'center', instruct1TextYpos); % Draw player earnings text
-    DrawFormattedText(win, earningsText12, 'center', instruct3TextYpos); % Draw opponent earnings text
+    DrawFormattedText(window, earningsText11, 'center', instruct1TextYpos); % Draw player earnings text
+    DrawFormattedText(window, earningsText12, 'center', instruct3TextYpos); % Draw opponent earnings text
 %     DrawFormattedText(win, instructText0, 'center', instructbotTextYpos); % Draw space bar instructions
-    Screen('Flip', win); % Flip to the screen
+    Screen('Flip', window); % Flip to the screen
 
 WaitSecs(4);
 
@@ -482,7 +482,7 @@ function [player2Options] = player2Update(player2Options, player2Strategy, playe
 end
 
 
-sca 
+% sca;
 
 
 %% End-of-block calculations and create log file
@@ -491,7 +491,7 @@ for i=1:NUMROUNDS
 end
 
 % save(['/Users/bentimberlake/Documents/MATLAB/patentTaskBTMP/logfiles/patent_race-subj_' num2str(particNum) '-' DateTime], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
-save(['patent_race-subj_' 'particNum' '-' 'DateTime'], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
+save([num2str(particNum) '-' DateTime '_3patent_race-subj'], 'player1Choice', 'player2Choice', 'player1Earnings', 'player2Earnings', 'trialLength');
 
 end
 
