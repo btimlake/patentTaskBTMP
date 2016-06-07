@@ -6,15 +6,15 @@
 % modified and amended Ben Timberlake, Feburary 2016
 
 
-function [player1Earnings] = patentTaskBTMP(particNum, DateTime, window, windowRect, player2Strategy)
+function [player1Earnings] = patentTaskBTMP(particNum, DateTime, window, windowRect, player2Strategy, player1maxbid)
 
 % clearvars -except particNum DateTime window windowRect;  
 
 % DateTime=datestr(now,'ddmm-HHMM');      % Get date and time for log file
 PRIZE=10;                               % Winnings aside from bidding endowment, currently a fixed value
-NUMROUNDS=5;                           % Number of rounds played against this opponent
-PLAYER1MAXBID=5;                        % Endowment for player1
-PLAYER2MAXBID=4;                        % Endowment for player2
+NUMROUNDS=40;                           % Number of rounds played against this opponent
+PLAYER1MAXBID=player1maxbid;                        % Endowment for player1
+PLAYER2MAXBID=9-PLAYER1MAXBID;                        % Endowment for player2
 TAU=2;                                  % Softmax temperature
 player1Options=zeros(1,6);              % Not used yet, maybe never will...
 player2Options=5*ones(1,5);             % Keeps track of the values for each betting amount
@@ -357,7 +357,7 @@ botSelectText = botInstructText;
 playerSelection = player1Choice(i);
 selectedRects = topRects(:,1:playerSelection);
 unSelected = playerSelection + 1;
-unselectedRects = topRects(:,unSelected:5);
+unselectedRects = topRects(:,unSelected:PLAYER1MAXBID);
 
 % Win Result text strings
 topWinText = topSelectText;
@@ -411,7 +411,7 @@ else
 end
 % lostRects = playerSelection - 1;
 % unselectWinRects = lowRects(:,1:currPlayerSelection);
-rewardRects = lowRects(:,6:10);
+rewardRects = lowRects(:,PLAYER1MAXBID+1:end);
 
 % display('test')
 Screen('FrameRect', window, p1Colors, topRects);
