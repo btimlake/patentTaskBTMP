@@ -23,8 +23,9 @@ player2Earnings=nan(NUMROUNDS,1);       % Keeps track of winnings for player2
 player1Choice=nan(NUMROUNDS,1);         % Keeps track of player1 choices
 player2Choice=nan(NUMROUNDS,1);         % Keeps track of player2 choices
 trialLength=nan(NUMROUNDS,1);           % Keeps track of length of each trial
-% player2Strategy='Fictive';
-player2Strategy='random'; %COMMENT AFTER DEBUGGING
+% player2Strategy='rl';
+player2Strategy='fictive'; %COMMENT AFTER DEBUGGING
+% player2Strategy='random';
 % Shorter delays
 fixationDelay = 1 + (2-1).*rand(NUMROUNDS,1); % Creates array of random fixation cross presentation time of 1-2 seconds
 feedbackDelay = 1 + (3-1).*rand(NUMROUNDS,1); % Creates array of random delay between choice and feedback of 1-3 seconds
@@ -32,6 +33,9 @@ feedbackDelay = 1 + (3-1).*rand(NUMROUNDS,1); % Creates array of random delay be
 % fixationDelay = 4 + (8-4).*rand(NUMROUNDS,1); % Creates array of random fixation cross presentation time of 4-8 seconds
 % feedbackDelay = 2 + (6-2).*rand(NUMROUNDS,1); % Creates array of random delay between choice and feedback of 2-6 seconds
 KbName('UnifyKeyNames');
+% RestrictKeysForKbCheck([37,39,32]); % limit recognized presses to space and left and right arrows PC
+RestrictKeysForKbCheck([79,80,44]); % limit recognized presses to space and left and right arrows MAC
+
 %RESTORE AFTER DEBUGGING
 % if (nargin<1)                           % If the function is called without update method
 %     player2Strategy='random';
@@ -57,13 +61,13 @@ KbName('UnifyKeyNames');
 
 % HideCursor;
 
-%% Screen 0: Instructions
-% win = 10 %COMMENT AFTER DEBUGGING
-
-% screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
-% [window, windowRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
-% [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255]); %white background
-
+% %% Screen 0: Instructions
+% % win = 10 %COMMENT AFTER DEBUGGING
+% 
+% % screenRect = [0 0 640 480] %COMMENT AFTER DEBUGGING
+% % [window, windowRect] = Screen('OpenWindow', 0, [255, 255, 255], [0 0 640 480]); %white background
+% % [win, screenRect] = Screen('OpenWindow', 0, [255, 255, 255]); %white background
+% 
 %set colors 
 % topColors = [0, 0, 0]; % black
 p1Colors = [0, 0, 0.8039]; %MediumBlue
@@ -77,7 +81,7 @@ winColors = [.1333, .5451, .1333]; %ForestGreen
 instructCola = [0, 0.4078, 0.5451]; %DeepSkyBlue4
 % instructColb = [205,149,12]; %DarkGoldenRod3
 instructColb = [0.8039, 0.5843, 0.0471]; %DarkGoldenRod3
-
+% 
 % Get the size of the on-screen window
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
 % Get the center coordinates of the window
@@ -85,11 +89,16 @@ instructColb = [0.8039, 0.5843, 0.0471]; %DarkGoldenRod3
 screenCenter = [xCenter, yCenter]; % center coordinates
 
 %Rectangle positions
-topRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45];
+
+fullRowXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45];
+% topRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45];
+topRectXpos = fullRowXpos(1:PLAYER1MAXBID);
 numtopRect = length(topRectXpos); % Screen X positions of top five rectangles
-uppRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36];
+% uppRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36];
+uppRectXpos = fullRowXpos(1:PLAYER2MAXBID);
 numuppRect = length(uppRectXpos); % Screen X positions of upper four rectangles
-lowRectXpos = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45 screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 screenXpixels * 0.81 screenXpixels * 0.9];
+lowRectXposFull = [screenXpixels * 0.09 screenXpixels * 0.18 screenXpixels * 0.27 screenXpixels * 0.36 screenXpixels * 0.45 screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 screenXpixels * 0.81 screenXpixels * 0.9];
+lowRectXpos = lowRectXposFull([1:PLAYER1MAXBID 6:end]);
 numlowRect = length(lowRectXpos); % Screen X positions of lower ten rectangles
 botRectXpos = [screenXpixels * 0.54 screenXpixels * 0.63 screenXpixels * 0.72 screenXpixels * 0.81 screenXpixels * 0.9];
 numbotRect = length(botRectXpos); % Screen X positions of bottom five rectangles
@@ -130,104 +139,104 @@ fontSize = round(screenYpixels * 2/40);
 % Set standard line weight    
 lineWidthPix = round(screenXpixels * 2 / 560);
    
-instructText11 = ['You are competing against an opponent'];
-instructText12 = ['to win a prize in each trial.'];
-instructText13 = ['You can invest 0-' num2str(PLAYER1MAXBID) ' cards.'];
-instructText14 = ['Your opponent can invest  0-' num2str(PLAYER2MAXBID) '.'];
-instructText15 = ['The player who invests more wins 10.'];
-instructText16 = ['If both invest the same amount,'];
-instructText17 = ['neither player wins.'];
-instructText18 = ['Whatever you don''t invest, you keep.'];
-instructText19 = ['(For example, if you invest 3,'];
-instructText20 = ['you keep 2, whether you win or lose.)'];
-instructText0 = ['Hit the SPACE bar to continue.'];
-instructText21 = ['Your endowment is renewed each round.'];
-instructText22 = ['Your payment after the experiment will'];
-instructText23 = ['be based on two random trials.'];
-instructText24 = ['So every trial could matter.'];
-instructText25 = ['A fixation cross appears between rounds.'];
-% instructText22 = ['to select how many to invest.'];
-instructText27 = ['Use the left/right arrow keys'];
-instructText28 = ['to select how many cards to invest.'];
-instructText29 = ['Then hit the SPACE bar to confirm your choice.'];
-
+% instructText11 = ['You are competing against an opponent'];
+% instructText12 = ['to win a prize in each trial.'];
+% instructText13 = ['You can invest 0-' num2str(PLAYER1MAXBID) ' cards.'];
+% instructText14 = ['Your opponent can invest  0-' num2str(PLAYER2MAXBID) '.'];
+% instructText15 = ['The player who invests more wins 10.'];
+% instructText16 = ['If both invest the same amount,'];
+% instructText17 = ['neither player wins.'];
+% instructText18 = ['Whatever you don''t invest, you keep.'];
+% instructText19 = ['(For example, if you invest 3,'];
+% instructText20 = ['you keep 2, whether you win or lose.)'];
+% instructText0 = ['Hit the SPACE bar to continue.'];
+% instructText21 = ['Your endowment is renewed each round.'];
+% instructText22 = ['Your payment after the experiment will'];
+% instructText23 = ['be based on two random trials.'];
+% instructText24 = ['So every trial could matter.'];
+% instructText25 = ['A fixation cross appears between rounds.'];
+% % instructText22 = ['to select how many to invest.'];
+% instructText27 = ['Use the left/right arrow keys'];
+% instructText28 = ['to select how many cards to invest.'];
+% instructText29 = ['Then hit the SPACE bar to confirm your choice.'];
+% 
 keyName=''; % empty initial value
-
-%% Italian instructions
-% Select specific text font, style and size:
-fontSize = round(screenYpixels * 1/40);
-    Screen('TextFont', window, 'Courier New');
-    Screen('TextSize', window, fontSize);
-    Screen('TextStyle', window);
-    Screen('TextColor', window, black);
-
-patentInstr1 = {'Stai per giocare contro un un algoritmo'; ...
-    'adattivo del computer per vincere quanto'; ...
-    'pi? denaro possibile. Il computer fa la'; ...
-    'sua scelta prima di tu.' ; ; ...
-    'Tu puoi investire da 0 a ',  num2str(PLAYER1MAXBID), ' carte;'}; ...
-    'il tuo avversario ne pu? investire da 0 a ', num2str(PLAYER2MAXBID), '.'; ; ...
-    'Il giocatore che investe pi? carte a ogni'; ...
-    'turno vince 10 carte per turno.'; ...
-    'Se entrambi investono lo stesso numero di carte,'; ...
-    'non vince nessun giocatore'; ; ...
-    'Manterrai il numero di carte che non investirai'; ...
-    '(e.g. se ne investi 3, le altre 2 rimarranno a te,'; ...
-    'sia che tu vinca sia che tu perda).'; ; ...
-    'Usa i tasti freccia per scegliere quante carte'; ...
-    'investire, poi clicca SPAZIO per confermare la'; ...
-    'tua scelta.';  ; ; 'Clicca SPAZIO per continuare.'};
-
-for line_num = 1:length(patentInstr1)
-line_width = RectWidth(Screen('TextBounds',window,patentInstr1{line_num}));
-Screen('DrawText', window, patentInstr1{line_num}, screenCenter(1) - line_width/2, ...
-screenCenter(2) - fontSize * (2 + length(patentInstr1)-line_num+1), instructCola); 
-end
-
-while(~strcmp(keyName,'space')) % continues until current keyName is space
-    
-    DrawFormattedText(window, instructText11, 'center', instruct1TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(window, instructText12, 'center', instruct2TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(window, instructText13, 'center', instruct3TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(window, instructText14, 'center', instruct4TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(window, instructText15, 'center', instruct5TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(window, instructText16, 'center', instruct6TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(window, instructText17, 'center', instruct7TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(window, instructText18, 'center', instruct8TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(window, instructText19, 'center', instruct9TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(window, instructText20, 'center', instruct10TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(window, instructText0, 'center', instructbotTextYpos, p1Colors); % Draw betting instructions
-    Screen('Flip', window); % Flip to the screen
-
-    [keyTime, keyCode]=KbWait([],2);
-    keyName=KbName(keyCode);
-
-end
-
-keyName=''; %resets value to cue next screen
-%      Screen('Flip', win); % Flip to the screen
-WaitSecs(.25);
-
-while(~strcmp(keyName,'space')) % continues until current keyName is space
-
-    DrawFormattedText(window, instructText21, 'center', instruct1TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(window, instructText22, 'center', instruct2TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(window, instructText23, 'center', instruct3TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(window, instructText24, 'center', instruct4TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(window, instructText25, 'center', instruct5TextYpos, instructColb); % Draw betting instructions
-%     DrawFormattedText(win, instructText26, 'center', instruct6TextYpos, instructColb); % Draw betting instructions
-    DrawFormattedText(window, instructText27, 'center', instruct7TextYpos, p1Colors); % Draw betting instructions
-    DrawFormattedText(window, instructText28, 'center', instruct8TextYpos, p1Colors); % Draw betting instructions
-    DrawFormattedText(window, instructText29, 'center', instruct9TextYpos, p1Colors); % Draw betting instructions
-%     DrawFormattedText(win, instructText30, 'center', instruct10TextYpos, instructCola); % Draw betting instructions
-    DrawFormattedText(window, instructText0, 'center', instructbotTextYpos, p1Colors); % Draw betting instructions
-    Screen('Flip', window); % Flip to the screen
-
-    [keyTime, keyCode]=KbWait([],2);
-    keyName=KbName(keyCode);
-
-end
-
+% 
+% %% Italian instructions
+% % Select specific text font, style and size:
+% fontSize = round(screenYpixels * 1/40);
+%     Screen('TextFont', window, 'Courier New');
+%     Screen('TextSize', window, fontSize);
+%     Screen('TextStyle', window);
+%     Screen('TextColor', window, black);
+% 
+% patentInstr1 = {'Stai per giocare contro un un algoritmo'; ...
+%     'adattivo del computer per vincere quanto'; ...
+%     'pi? denaro possibile. Il computer fa la'; ...
+%     'sua scelta prima di tu.' ; ; ...
+%     'Tu puoi investire da 0 a ',  num2str(PLAYER1MAXBID), ' carte;'}; ...
+%     'il tuo avversario ne pu? investire da 0 a ', num2str(PLAYER2MAXBID), '.'; ; ...
+%     'Il giocatore che investe pi? carte a ogni'; ...
+%     'turno vince 10 carte per turno.'; ...
+%     'Se entrambi investono lo stesso numero di carte,'; ...
+%     'non vince nessun giocatore'; ; ...
+%     'Manterrai il numero di carte che non investirai'; ...
+%     '(e.g. se ne investi 3, le altre 2 rimarranno a te,'; ...
+%     'sia che tu vinca sia che tu perda).'; ; ...
+%     'Usa i tasti freccia per scegliere quante carte'; ...
+%     'investire, poi clicca SPAZIO per confermare la'; ...
+%     'tua scelta.';  ; ; 'Clicca SPAZIO per continuare.'};
+% 
+% for line_num = 1:length(patentInstr1)
+% line_width = RectWidth(Screen('TextBounds',window,patentInstr1{line_num}));
+% Screen('DrawText', window, patentInstr1{line_num}, screenCenter(1) - line_width/2, ...
+% screenCenter(2) - fontSize * (2 + length(patentInstr1)-line_num+1), instructCola); 
+% end
+% 
+% while(~strcmp(keyName,'space')) % continues until current keyName is space
+%     
+%     DrawFormattedText(window, instructText11, 'center', instruct1TextYpos, instructCola); % Draw betting instructions
+%     DrawFormattedText(window, instructText12, 'center', instruct2TextYpos, instructCola); % Draw betting instructions
+%     DrawFormattedText(window, instructText13, 'center', instruct3TextYpos, instructColb); % Draw betting instructions
+%     DrawFormattedText(window, instructText14, 'center', instruct4TextYpos, instructCola); % Draw betting instructions
+%     DrawFormattedText(window, instructText15, 'center', instruct5TextYpos, instructColb); % Draw betting instructions
+%     DrawFormattedText(window, instructText16, 'center', instruct6TextYpos, instructCola); % Draw betting instructions
+%     DrawFormattedText(window, instructText17, 'center', instruct7TextYpos, instructCola); % Draw betting instructions
+%     DrawFormattedText(window, instructText18, 'center', instruct8TextYpos, instructColb); % Draw betting instructions
+%     DrawFormattedText(window, instructText19, 'center', instruct9TextYpos, instructCola); % Draw betting instructions
+%     DrawFormattedText(window, instructText20, 'center', instruct10TextYpos, instructCola); % Draw betting instructions
+%     DrawFormattedText(window, instructText0, 'center', instructbotTextYpos, p1Colors); % Draw betting instructions
+%     Screen('Flip', window); % Flip to the screen
+% 
+%     [keyTime, keyCode]=KbWait([],2);
+%     keyName=KbName(keyCode);
+% 
+% end
+% 
+% keyName=''; %resets value to cue next screen
+% %      Screen('Flip', win); % Flip to the screen
+% WaitSecs(.25);
+% 
+% while(~strcmp(keyName,'space')) % continues until current keyName is space
+% 
+%     DrawFormattedText(window, instructText21, 'center', instruct1TextYpos, instructCola); % Draw betting instructions
+%     DrawFormattedText(window, instructText22, 'center', instruct2TextYpos, instructColb); % Draw betting instructions
+%     DrawFormattedText(window, instructText23, 'center', instruct3TextYpos, instructColb); % Draw betting instructions
+%     DrawFormattedText(window, instructText24, 'center', instruct4TextYpos, instructCola); % Draw betting instructions
+%     DrawFormattedText(window, instructText25, 'center', instruct5TextYpos, instructColb); % Draw betting instructions
+% %     DrawFormattedText(win, instructText26, 'center', instruct6TextYpos, instructColb); % Draw betting instructions
+%     DrawFormattedText(window, instructText27, 'center', instruct7TextYpos, p1Colors); % Draw betting instructions
+%     DrawFormattedText(window, instructText28, 'center', instruct8TextYpos, p1Colors); % Draw betting instructions
+%     DrawFormattedText(window, instructText29, 'center', instruct9TextYpos, p1Colors); % Draw betting instructions
+% %     DrawFormattedText(win, instructText30, 'center', instruct10TextYpos, instructCola); % Draw betting instructions
+%     DrawFormattedText(window, instructText0, 'center', instructbotTextYpos, p1Colors); % Draw betting instructions
+%     Screen('Flip', window); % Flip to the screen
+% 
+%     [keyTime, keyCode]=KbWait([],2);
+%     keyName=KbName(keyCode);
+% 
+% end
+% 
 
 %% Screen 1: Presentation
 
@@ -377,11 +386,12 @@ botSelectText = botInstructText;
     
     player1ChoiceInd = player1Choice(i)+1;      %because choosing 0 is an option, there's a discrepancy between choices and index of options...
     
-    player2Choice(i)=find(rand < cumsum(exp(player2Options.*TAU)/sum(exp(player2Options.*TAU))),1);  % uses softmax to make a choice (TAU -> 0 = more random)
-    
+    player2ChoiceInd=find(rand < cumsum(exp(player2Options.*TAU)/sum(exp(player2Options.*TAU))),1);  % uses softmax to make a choice (TAU -> 0 = more random)
+    player2Choice(i)=player2ChoiceInd-1;
+
     player1Earnings(i) = PLAYER1MAXBID + (PRIZE-player1Choice(i))*(player1ChoiceInd > player2Choice(i)) - player1Choice(i)*(player1ChoiceInd<=player2Choice(i)); %calculates how much the strong player wins
-    player2Earnings(i) = PLAYER2MAXBID + (PRIZE-player2Choice(i))*(player2Choice(i) > player1ChoiceInd) - player2Choice(i)*(player2Choice(i)<=player1ChoiceInd); %calculates how much the weak player wins
-    player2Options = player2Update(player2Options, player2Strategy, player2Choice(i), player2Earnings(i), player1ChoiceInd, PRIZE, PLAYER2MAXBID);  %calls the function that determines how player2 will update its values
+    player2Earnings(i) = PLAYER2MAXBID + (PRIZE-player2Choice(i))*((player2ChoiceInd) > player1ChoiceInd) - player2Choice(i)*(player2ChoiceInd<=player1ChoiceInd); %calculates how much the weak player wins
+    player2Options = player2Update(player2Options, player2Strategy, player2Choice(i), player2Earnings(i), player1Choice(i), PRIZE, PLAYER2MAXBID);  %calls the function that determines how player2 will update its values
     
 %% Screen 2: Player's selection
 playerSelection = player1Choice(i);
@@ -391,7 +401,7 @@ unselectedRects = topRects(:,unSelected:PLAYER1MAXBID);
 
 % Win Result text strings
 topWinText = topSelectText;
-uppWinText = ['Your opponent invested ' num2str(player2Choice(i)-1) '.'];
+uppWinText = ['Your opponent invested ' num2str(player2Choice(i)) '.'];
 botWinText = ['You earned ' num2str(player1Earnings(i)) ' in this round.']; 
 lowWinText = ['Your opponent earned ' num2str(player2Earnings(i)) ' in this round.']; 
 
@@ -426,7 +436,7 @@ Screen('Flip', window); % Flip to the screen
 WaitSecs(feedbackDelay(i));
 
 %% Screen 3: Result
-weakSelection = player2Choice(i)-1;
+weakSelection = player2Choice(i);
 if weakSelection ~= 0
     weakselRects = uppRects(:,1:weakSelection);
 else
@@ -516,6 +526,7 @@ end
 
 
 % sca;
+RestrictKeysForKbCheck([]); % re-recognize all key presses
 
 
 %% End-of-block calculations and create log file
